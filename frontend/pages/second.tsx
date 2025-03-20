@@ -8,7 +8,7 @@ function App() {
       
       <div className="bg-white shadow-sm w-full max-w-3xl px-8 py-4 border border-gray-400 relative">
         <div className="absolute text-sm font-bold text-black top-5 right-5">
-            S.No - 2022/I/ABC123/R/456
+            S.No - 2022/II/ABC123/R/456
         </div>
         <br />
         {/* Logo */}
@@ -114,7 +114,7 @@ function App() {
               <tr className="bg-white font-semibold">
                 <td colSpan={3} className="border border-gray-200 px-4 py-1 text-right text-black text-[10px]">TOTAL</td>
                 <td className="border border-gray-200 px-4 py-1 text-black text-[10px] text-center">1100</td>
-                <td className="border border-gray-200 px-4 py-1 text-black text-[10px] text-center">999</td>
+                <td className="border border-gray-200 px-4 py-1 text-black text-[10px] text-center">785</td>
                 <td className="border border-gray-200 px-4 py-1 text-black text-[10px] text-center"></td>
               </tr>
             </tbody>
@@ -144,9 +144,9 @@ function App() {
             </thead>
             <tbody>
                 <tr className="hover:bg-gray-50">
-                    <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">1000/1100</td>
-                    <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">999/1100</td>
-                    <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">1999/2200</td>
+                    <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">725/1000</td>
+                    <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">785/1100</td>
+                    <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">1510/2100</td>
                     <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">PASSED</td>
                 </tr>
             </tbody>
