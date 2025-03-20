@@ -51,7 +51,7 @@ function App() {
 
         {/* Year */}
         <div className="flex justify-center mb-2">
-          <p className='text-gray-700 text-xs'>Year: <span className='text-gray-900'>First</span></p>
+          <p className='text-gray-700 text-xs'>Year: <span className='text-gray-900'>Second</span></p>
         </div>
 
         {/* Marks Table */}
@@ -96,13 +96,38 @@ function App() {
           </div>
         </div>
 
+        <div className="overflow-x-auto mb-2">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-white">
+                <th colSpan={3} className="border border-gray-200 px-4 py-2 text-center text-xs text-black">Marks Obtained/Maximum Marks</th>
+                <th rowSpan={2} className="border border-gray-200 px-4 py-2 text-center text-xs text-black">Final Result</th>
+              </tr>
+              <tr>
+                <th className="border border-gray-200 px-4 py-2 text-center uppercase text-xs text-black">First Year</th>
+                <th className="border border-gray-200 px-4 py-2 text-center uppercase text-xs text-black">Second Year</th>
+                <th className="border border-gray-200 px-4 py-2 text-center uppercase text-xs text-black">Grand Total</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr className="hover:bg-gray-50">
+                    <td className="border border-gray-200 text-xs text-center px-4 py-1 text-black">500/700</td>
+                    <td className="border border-gray-200 text-xs text-center px-4 py-1 text-black">400/700</td>
+                    <td className="border border-gray-200 text-xs text-center px-4 py-1 text-black">1100/1400</td>
+                    <td className="border border-gray-200 text-xs text-center px-4 py-1 text-black">PASSED</td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+
         {/* Instructions */}
         <div className="space-y-1 text-xs text-gray-600 mb-8">
           <h3 className="font-medium text-gray-700">Instructions:</h3>
           <ol className="list-decimal pl-4">
             <li>Students having more than two fail in the Paper Result shall not be entitled for the diploma</li>
-            <li>English Communication - I marks are not included in the calculation of total marks</li>
+            <li>Face The World Skill marks are not included in the calculation of total marks</li>
             <li>Abbreviation: PD: Pass with Distinction, PFD: Pass with First Division, P: Pass, F: Fail</li>
+            <li>Student passed provisionally has failed in either of face the world skill or English communication - I or both. To recieve diploma, student should pass these two subjects compulsarily</li>
           </ol>
         </div>
 
