@@ -41,11 +41,11 @@ function App() {
         <div className="flex gap-6 mb-2 justify-between">
           <div className="flex gap-1 items-baseline">
             <p className="text-xs text-gray-500">Name of the Student:</p>
-            <p className='text-gray-900 text-xs'>Harshit Tiwari</p>
+            <p className='text-gray-900 text-xs'>ANOOP KUMAR</p>
           </div>
           <div className="flex gap-1 items-baseline">
             <p className="text-xs text-gray-500">Enrollment No.:</p>
-            <p className='text-gray-900 text-xs'>123456</p>
+            <p className='text-gray-900 text-xs'>11321007</p>
           </div>
         </div>
 
@@ -59,16 +59,16 @@ function App() {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-white">
-                <th className="border border-gray-200 px-4 py-2 text-left text-xs text-black">S.No.</th>
-                <th className="border border-gray-200 px-4 py-2 text-left text-xs text-black">Course Code</th>
-                <th className="border border-gray-200 px-4 py-2 text-left text-xs text-black">Course Name</th>
-                <th className="border border-gray-200 px-4 py-2 text-left text-xs text-black">Max. Marks</th>
-                <th className="border border-gray-200 px-4 py-2 text-left text-xs text-black">Marks Obtained</th>
-                <th className="border border-gray-200 px-4 py-2 text-left text-xs text-black">Paper Result</th>
+                <th className="border border-gray-200 px-1 py-2 text-left text-[10px] text-black">S.No.</th>
+                <th className="border border-gray-200 px-1 py-2 text-left text-[10px] text-black">Course Code</th>
+                <th className="border border-gray-200 px-1 py-2 text-left text-[10px] text-black">Course Name</th>
+                <th className="border border-gray-200 px-1 py-2 text-left text-[10px] text-black">Max. Marks</th>
+                <th className="border border-gray-200 px-1 py-2 text-left text-[10px] text-black">Marks Obtained</th>
+                <th className="border border-gray-200 px-1 py-2 text-left text-[10px] text-black">Paper Result</th>
               </tr>
             </thead>
             <tbody>
-              {[...Array(12)].map((_, index) => (
+              {/* {[...Array(12)].map((_, index) => (
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="border border-gray-200 text-xs px-4 py-1 text-black">{index + 1}</td>
                   <td className="border border-gray-200 text-xs px-4 py-1 text-black"></td>
@@ -77,12 +77,45 @@ function App() {
                   <td className="border border-gray-200 text-xs px-4 py-1 text-black"></td>
                   <td className="border border-gray-200 text-xs px-4 py-1 text-black"></td>
                 </tr>
-              ))}
+              ))} */}
+              {[
+  { code: "ER20-21P", name: "PHARMACOLOGY - PRACTICAL", marks: 83 },
+  { code: "ER20-21T", name: "PHARMACOLOGY - THEORY", marks: 62 },
+  { code: "ER20-22P", name: "COMMUNITY PHARMACY & MANAGEMENT - PRACTICAL", marks: 76 },
+  { code: "ER20-22T", name: "COMMUNITY PHARMACY & MANAGEMENT - THEORY", marks: 72 },
+  { code: "ER20-23P", name: "BIOCHEMISTRY & CLINICAL PATHOLOGY - PRACTICAL", marks: 59 },
+  { code: "ER20-23T", name: "BIOCHEMISTRY & CLINICAL PATHOLOGY - THEORY", marks: 47 },
+  { code: "ER20-24P", name: "PHARMACOTHERAPEUTICS - PRACTICAL", marks: 83 },
+  { code: "ER20-24T", name: "PHARMACOTHERAPEUTICS - THEORY", marks: 77 },
+  { code: "ER20-25P", name: "HOSPITAL & CLINICAL PHARMACY - PRACTICAL", marks: 83 },
+  { code: "ER20-25T", name: "HOSPITAL & CLINICAL PHARMACY - THEORY", marks: 68 },
+  { code: "ER20-26T", name: "PHARMACY LAW & ETHICS - THEORY", marks: 75 },
+  { code: "ER-HF201", name: "SOFT SKILLS MODULES (FACE THE WORLD SKILLS)", marks: 92 },
+].map((subject, index) => {
+  let result;
+  if (subject.marks >= 75) result = "PD"; // Pass with Distinction
+  else if (subject.marks >= 60) result = "PFD"; // Pass with First Division
+  else if (subject.marks >= 50) result = "P"; // Pass
+  else result = "F"; // Fail
+
+  return (
+    <tr key={index} className="hover:bg-gray-50">
+      <td className="border border-gray-200 text-[8px] px-1 py-1 text-black">{index + 1}</td>
+      <td className="border border-gray-200 text-[8px] px-1 py-1 text-black">{subject.code}</td>
+      <td className="border border-gray-200 text-[8px] px-1 py-1 text-black">{subject.name}</td>
+      <td className="border border-gray-200 text-[8px] px-1 py-1 text-black text-center">100</td>
+      <td className="border border-gray-200 text-[8px] px-1 py-1 text-black text-center">{subject.marks}</td>
+      <td className="border border-gray-200 text-[8px] px-1 py-1 text-black text-center">{result}</td>
+    </tr>
+  );
+})}
+
+              
               <tr className="bg-white font-semibold">
-                <td colSpan={3} className="border border-gray-200 px-4 py-1 text-right text-black text-xs">Total</td>
-                <td className="border border-gray-200 px-4 py-1 text-black text-xs"></td>
-                <td className="border border-gray-200 px-4 py-1 text-black text-xs"></td>
-                <td className="border border-gray-200 px-4 py-1 text-black text-xs"></td>
+                <td colSpan={3} className="border border-gray-200 px-4 py-1 text-right text-black text-[10px]">TOTAL</td>
+                <td className="border border-gray-200 px-4 py-1 text-black text-[10px] text-center">1100</td>
+                <td className="border border-gray-200 px-4 py-1 text-black text-[10px] text-center">999</td>
+                <td className="border border-gray-200 px-4 py-1 text-black text-[10px] text-center"></td>
               </tr>
             </tbody>
           </table>
@@ -96,25 +129,25 @@ function App() {
           </div>
         </div>
 
-        <div className="overflow-x-auto mb-2">
+        <div className="overflow-x-auto my-4">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-white">
-                <th colSpan={3} className="border border-gray-200 px-4 py-2 text-center text-xs text-black">Marks Obtained/Maximum Marks</th>
-                <th rowSpan={2} className="border border-gray-200 px-4 py-2 text-center text-xs text-black">Final Result</th>
+                <th colSpan={3} className="border border-gray-200 px-4 py-2 text-center text-[10px] text-black">Marks Obtained/Maximum Marks</th>
+                <th rowSpan={2} className="border border-gray-200 px-4 py-2 text-center text-[10px] text-black">Final Result</th>
               </tr>
               <tr>
-                <th className="border border-gray-200 px-4 py-2 text-center uppercase text-xs text-black">First Year</th>
-                <th className="border border-gray-200 px-4 py-2 text-center uppercase text-xs text-black">Second Year</th>
-                <th className="border border-gray-200 px-4 py-2 text-center uppercase text-xs text-black">Grand Total</th>
+                <th className="border border-gray-200 px-4 py-2 text-center uppercase text-[8px] text-black">First Year</th>
+                <th className="border border-gray-200 px-4 py-2 text-center uppercase text-[8px] text-black">Second Year</th>
+                <th className="border border-gray-200 px-4 py-2 text-center uppercase text-[8px] text-black">Grand Total</th>
               </tr>
             </thead>
             <tbody>
                 <tr className="hover:bg-gray-50">
-                    <td className="border border-gray-200 text-xs text-center px-4 py-1 text-black">500/700</td>
-                    <td className="border border-gray-200 text-xs text-center px-4 py-1 text-black">400/700</td>
-                    <td className="border border-gray-200 text-xs text-center px-4 py-1 text-black">1100/1400</td>
-                    <td className="border border-gray-200 text-xs text-center px-4 py-1 text-black">PASSED</td>
+                    <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">1000/1100</td>
+                    <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">999/1100</td>
+                    <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">1999/2200</td>
+                    <td className="border border-gray-200 text-[8px] text-center px-4 py-1 text-black">PASSED</td>
                 </tr>
             </tbody>
           </table>
@@ -133,16 +166,16 @@ function App() {
 
         {/* Footer */}
         <div className="flex">
-          <p className="font-bold text-sm text-gray-600 mb-1">Date of Issue: </p>
-          <p className='text-gray-700 text-sm'>12-March-2024</p>
+          <p className="font-bold text-xs text-gray-600 mb-1">Date of Issue: </p>
+          <p className='text-gray-700 text-xs'>12-March-2024</p>
         </div>
         <div className="flex justify-between gap-4 text-sm text-gray-600">
           <div className="mt-10">
-            <p className="font-bold text-sm mb-1 ">Checked by:</p>
+            <p className="font-bold text-xs mb-1 ">Checked by:</p>
             <p>Deputy Registrar</p>
           </div>
-          <div className="mt-10 text-right">
-            <p className="font-bold text-sm mb-1">Issued by:</p>
+          <div className="mt-10 text-right text-sm">
+            <p className="font-bold text-xs mb-1">Issued by:</p>
             <p>Controller of Examination</p>
           </div>
         </div>
