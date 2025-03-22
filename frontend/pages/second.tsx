@@ -79,18 +79,18 @@ function App() {
                 </tr>
               ))} */}
               {[
-  { code: "ER20-21P", name: "PHARMACOLOGY - PRACTICAL", marks: 83 },
-  { code: "ER20-21T", name: "PHARMACOLOGY - THEORY", marks: 62 },
-  { code: "ER20-22P", name: "COMMUNITY PHARMACY & MANAGEMENT - PRACTICAL", marks: 76 },
-  { code: "ER20-22T", name: "COMMUNITY PHARMACY & MANAGEMENT - THEORY", marks: 72 },
-  { code: "ER20-23P", name: "BIOCHEMISTRY & CLINICAL PATHOLOGY - PRACTICAL", marks: 59 },
-  { code: "ER20-23T", name: "BIOCHEMISTRY & CLINICAL PATHOLOGY - THEORY", marks: 47 },
-  { code: "ER20-24P", name: "PHARMACOTHERAPEUTICS - PRACTICAL", marks: 83 },
-  { code: "ER20-24T", name: "PHARMACOTHERAPEUTICS - THEORY", marks: 77 },
-  { code: "ER20-25P", name: "HOSPITAL & CLINICAL PHARMACY - PRACTICAL", marks: 83 },
-  { code: "ER20-25T", name: "HOSPITAL & CLINICAL PHARMACY - THEORY", marks: 68 },
-  { code: "ER20-26T", name: "PHARMACY LAW & ETHICS - THEORY", marks: 75 },
-  { code: "ER-HF201", name: "SOFT SKILLS MODULES (FACE THE WORLD SKILLS)", marks: 92 },
+  { code: "ER20-21P", name: "Pharmacology - Practical", marks: 83 },
+  { code: "ER20-21T", name: "Pharmacology - Theory", marks: 62 },
+  { code: "ER20-22P", name: "Community Pharmacy & Management - Practical", marks: 76 },
+  { code: "ER20-22T", name: "Community Pharmacy & Management - Theory", marks: 72 },
+  { code: "ER20-23P", name: "Biochemistry & Clinical Pathology - Practical", marks: 59 },
+  { code: "ER20-23T", name: "Biochemistry & Clinical Pathology - Theory", marks: 47 },
+  { code: "ER20-24P", name: "Pharmacotherapeutics - Practical", marks: 83 },
+  { code: "ER20-24T", name: "Pharmacotherapeutics - Theory", marks: 77 },
+  { code: "ER20-25P", name: "Hospital & Clinical Pharmacy - Practical", marks: 83 },
+  { code: "ER20-25T", name: "Hospital & Clinical Pharmacy - Theory", marks: 68 },
+  { code: "ER20-26T", name: "Pharmacy Law & Ethics - Theory", marks: 75 },
+  { code: "ER-HF201", name: "Soft Skills Modules (Face The World Skills)", marks: 92 },
 ].map((subject, index) => {
   let result;
   if (subject.marks >= 75) result = "PD"; // Pass with Distinction
