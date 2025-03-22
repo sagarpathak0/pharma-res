@@ -38,7 +38,7 @@ function App() {
             First Year
           </h2>
           <h2 className="text-md font-mono font-bold text-gray-700">
-            Examination Held in June 2024
+            Examination Held in June 2023
           </h2>
         </div>
 
@@ -64,19 +64,19 @@ function App() {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-white">
-                <th className="border border-gray-200 px-1 py-2 text-[12px] text-center text-black">
+                <th className="border border-gray-200 px-1 font-serif py-2 text-[12px] text-center text-black">
                   S.No.
                 </th>
-                <th className="border border-gray-200 px-1 py-2 text-left text-[12px] text-black">
+                <th className="border border-gray-200 px-1 font-serif py-2 text-left text-[12px] text-black">
                   Course Code
                 </th>
-                <th className="border border-gray-200 px-1 py-2 text-left text-[12px] text-black">
+                <th className="border border-gray-200 px-1 font-serif py-2 text-left text-[12px] text-black">
                   Course Name
                 </th>
-                <th className="border border-gray-200 px-1 py-2 text-center text-[12px] text-black">
+                <th className="border border-gray-200 px-1 font-serif py-2 text-center text-[12px] text-black">
                   Max. Marks
                 </th>
-                <th className="border border-gray-200 px-1 py-2 text-center text-[12px] text-black">
+                <th className="border border-gray-200 px-1 font-serif py-2 text-center text-[12px] text-black">
                   Marks Obtained
                 </th>
                 
@@ -136,19 +136,19 @@ function App() {
 
                 return (
                   <tr key={index} className="hover:bg-gray-50">
-                    <td className="border border-gray-200 text-[12px] px-1 py-1 text-black text-center">
+                    <td className="border border-gray-200 text-[12px] font-serif px-1 py-1 text-black text-center">
                       {index + 1}
                     </td>
-                    <td className="border border-gray-200 text-[12px] px-1 py-1 text-black">
+                    <td className="border border-gray-200 text-[12px] font-mono px-1 py-1 text-black">
                       {subject.code}
                     </td>
-                    <td className="border border-gray-200 text-[12px] px-1 py-1 text-black">
+                    <td className="border border-gray-200 text-[12px] font-serif px-1 py-1 text-black">
                       {subject.name}
                     </td>
-                    <td className="border border-gray-200 text-[12px] px-1 py-1 text-black text-center">
+                    <td className="border border-gray-200 text-[12px] font-mono px-1 py-1 text-black text-center">
                       100
                     </td>
-                    <td className="border border-gray-200 text-[12px] px-1 py-1 text-black text-center">
+                    <td className="border border-gray-200 text-[12px] font-mono px-1 py-1 text-black text-center">
                       {subject.marks}
                     </td>
                     
@@ -159,14 +159,14 @@ function App() {
               <tr className="bg-white font-semibold">
                 <td
                   colSpan={3}
-                  className="border border-gray-200 px-4 py-1 text-right text-black text-[12px]"
+                  className="border border-gray-200 px-4 py-1 text-right font-serif text-black text-[12px]"
                 >
                   TOTAL
                 </td>
-                <td className="border border-gray-200 px-4 py-1 text-black text-[12px] text-center">
+                <td className="border border-gray-200 px-4 py-1 text-black text-[12px] font-mono text-center">
                   1000
                 </td>
-                <td className="border border-gray-200 px-4 py-1 text-black text-[12px] text-center">
+                <td className="border border-gray-200 px-4 py-1 text-black text-[12px] font-mono text-center">
                   725
                 </td>
               </tr>
@@ -200,7 +200,7 @@ function App() {
               calculation of total marks.
             </li>
             <li>
-              Student has failed in either Face the World Skill or Soft Skill Modules or both is passed provisionally. Student should pass these two subjects compulsarily for award of diploma.
+              Student has failed in either Face the World Skill or Soft Skill Modules or both is passed provisionally. Student should pass these two subjects compulsarily for award of the diploma.
             </li>
           </ol>
                   
@@ -211,7 +211,7 @@ function App() {
         <div className="flex w-full gap-4 text-sm text-gray-600 justify-end">
           <div className="mt-10 text-sm">
             <p className="font-bolder text-xs mb-1"></p>
-            <p className="font-bolder text-sm mb-1 italic">Computer Generated Statement of marks</p>
+            <p className="font-bolder text-sm mb-1 italic">Computer Generated Statement of Marks</p>
           </div>
         </div>
       </div>
