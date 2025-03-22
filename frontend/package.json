@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "next": "15.2.3",
+    "path": "^0.12.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-to-print": "^3.0.5"
+    "react-to-print": "^3.0.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
