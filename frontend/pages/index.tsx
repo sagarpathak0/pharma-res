@@ -139,7 +139,7 @@ function App() {
                     <td className="border border-gray-200 text-[12px] font-serif px-1 py-1 text-black text-center">
                       {index + 1}
                     </td>
-                    <td className="border border-gray-200 text-[12px] font-mono px-1 py-1 text-black">
+                    <td className="border border-gray-200 text-[11px] font-mono px-1 py-1 text-black">
                       {subject.code}
                     </td>
                     <td className="border border-gray-200 text-[12px] font-serif px-1 py-1 text-black">
