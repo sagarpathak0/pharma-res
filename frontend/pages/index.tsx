@@ -5,7 +5,7 @@ import Image from "next/image";
 function App() {
   return (
     <div className="min-h-full bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white shadow-sm w-full max-w-3xl px-8 py-8 border border-gray-400 relative">
+      <div className="bg-white shadow-sm w-full max-w-3xl px-8 py-4 border border-gray-400 relative">
         <br />
         {/* Logo */}
         <div className="mb-4 flex">
@@ -37,10 +37,13 @@ function App() {
           <h2 className="text-md font-mono font-bold text-gray-700">
             First Year
           </h2>
+          <h2 className="text-md font-mono font-bold text-gray-700">
+            Examination Held in June 2023
+          </h2>
         </div>
 
         {/* Student Info */}
-        <div className="flex gap-6 mb-5 justify-between">
+        <div className="flex gap-6 mb-2 justify-between">
           <div className="flex gap-1 items-baseline">
             <p className="text-sm text-gray-500">Name of the Student:</p>
             <p className="text-gray-900 font-bold text-sm">ANOOP KUMAR</p>
@@ -50,6 +53,10 @@ function App() {
             <p className="text-gray-900 font-bold text-sm">11321007</p>
           </div>
         </div>
+        <div className="flex mb-3 gap-1 items-baseline">
+            <p className="text-sm text-gray-500">Campus Name:</p>
+            <p className="text-gray-900 font-bold text-sm">Meerabai DSEU Maharani Bagh Campus</p>
+        </div>
 
 
         {/* Marks Table */}
@@ -57,19 +64,19 @@ function App() {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-white">
-                <th className="border border-gray-200 px-1 py-2 text-left text-[12px] text-black">
+                <th className="border border-gray-200 px-1 font-serif py-2 text-[12px] text-center text-black">
                   S.No.
                 </th>
-                <th className="border border-gray-200 px-1 py-2 text-left text-[12px] text-black">
+                <th className="border border-gray-200 px-1 font-serif py-2 text-left text-[12px] text-black">
                   Course Code
                 </th>
-                <th className="border border-gray-200 px-1 py-2 text-left text-[12px] text-black">
+                <th className="border border-gray-200 px-1 font-serif py-2 text-left text-[12px] text-black">
                   Course Name
                 </th>
-                <th className="border border-gray-200 px-1 py-2 text-left text-[12px] text-black">
+                <th className="border border-gray-200 px-1 font-serif py-2 text-center text-[12px] text-black">
                   Max. Marks
                 </th>
-                <th className="border border-gray-200 px-1 py-2 text-left text-[12px] text-black">
+                <th className="border border-gray-200 px-1 font-serif py-2 text-center text-[12px] text-black">
                   Marks Obtained
                 </th>
                 
@@ -79,49 +86,49 @@ function App() {
               {[
                 {
                   code: "ER20-11P",
-                  name: "PHARMACEUTICS - PRACTICAL",
+                  name: "Pharmaceutics - Practical",
                   marks: 86,
                 },
-                { code: "ER20-11T", name: "PHARMACEUTICS - THEORY", marks: 65 },
+                { code: "ER20-11T", name: "Pharmaceutics - Theory", marks: 65 },
                 {
                   code: "ER20-12P",
-                  name: "PHARMACEUTICAL CHEMISTRY - PRACTICAL",
+                  name: "Pharmaceutical Chemistry - Practical",
                   marks: 82,
                 },
                 {
                   code: "ER20-12T",
-                  name: "PHARMACEUTICAL CHEMISTRY - THEORY",
+                  name: "Pharmaceutical Chemistry - Theory",
                   marks: 44,
                 },
                 {
                   code: "ER20-13P",
-                  name: "PHARMACOGNOSY - PRACTICAL",
+                  name: "Pharmacognosy - Practical",
                   marks: 86,
                 },
-                { code: "ER20-13T", name: "PHARMACOGNOSY - THEORY", marks: 62 },
+                { code: "ER20-13T", name: "Pharmacognosy - Theory", marks: 62 },
                 {
                   code: "ER20-14P",
-                  name: "HUMAN ANATOMY & PHYSIOLOGY - PRACTICAL",
+                  name: "Human Anatomy & Physiology - Practical",
                   marks: 83,
                 },
                 {
                   code: "ER20-14T",
-                  name: "HUMAN ANATOMY & PHYSIOLOGY - THEORY",
+                  name: "Human Anatomy & Physiology - Theory",
                   marks: 64,
                 },
                 {
                   code: "ER20-15P",
-                  name: "SOCIAL PHARMACY - PRACTICAL",
+                  name: "Social Pharmacy - Practical",
                   marks: 85,
                 },
                 {
                   code: "ER20-15T",
-                  name: "SOCIAL PHARMACY - THEORY",
+                  name: "Social Pharmacy - Theory",
                   marks: 68,
                 },
                 {
                   code: "ER20-HF102",
-                  name: "ENGLISH COMMUNICATION - I",
+                  name: "Soft Skills Modules(English Communication - I & II)",
                   marks: 75,
                 },
               ].map((subject, index) => {
@@ -129,19 +136,19 @@ function App() {
 
                 return (
                   <tr key={index} className="hover:bg-gray-50">
-                    <td className="border border-gray-200 text-[12px] px-1 py-1 text-black">
+                    <td className="border border-gray-200 text-[12px] font-serif px-1 py-1 text-black text-center">
                       {index + 1}
                     </td>
-                    <td className="border border-gray-200 text-[12px] px-1 py-1 text-black">
+                    <td className="border border-gray-200 text-[11px] font-mono px-1 py-1 text-black">
                       {subject.code}
                     </td>
-                    <td className="border border-gray-200 text-[12px] px-1 py-1 text-black">
+                    <td className="border border-gray-200 text-[12px] font-serif px-1 py-1 text-black">
                       {subject.name}
                     </td>
-                    <td className="border border-gray-200 text-[12px] px-1 py-1 text-black text-center">
+                    <td className="border border-gray-200 text-[12px] font-mono px-1 py-1 text-black text-center">
                       100
                     </td>
-                    <td className="border border-gray-200 text-[12px] px-1 py-1 text-black text-center">
+                    <td className="border border-gray-200 text-[12px] font-mono px-1 py-1 text-black text-center">
                       {subject.marks}
                     </td>
                     
@@ -152,14 +159,14 @@ function App() {
               <tr className="bg-white font-semibold">
                 <td
                   colSpan={3}
-                  className="border border-gray-200 px-4 py-1 text-right text-black text-[12px]"
+                  className="border border-gray-200 px-4 py-1 text-right font-serif text-black text-[12px]"
                 >
                   TOTAL
                 </td>
-                <td className="border border-gray-200 px-4 py-1 text-black text-[12px] text-center">
+                <td className="border border-gray-200 px-4 py-1 text-black text-[12px] font-mono text-center">
                   1000
                 </td>
-                <td className="border border-gray-200 px-4 py-1 text-black text-[12px] text-center">
+                <td className="border border-gray-200 px-4 py-1 text-black text-[12px] font-mono text-center">
                   725
                 </td>
               </tr>
@@ -182,19 +189,18 @@ function App() {
 
         {/* Instructions */}
         {/* Instructions */}
-        <div className="space-y-1 text-xs text-gray-600 mb-8">
+        <div className="space-y-1 text-sm text-gray-600 mb-8">
           <h3 className="font-medium text-gray-700">Instructions:</h3>
           <ol className="list-decimal pl-4">
             <li>
-              Students having more than two fail in the Paper Result shall not
-              be entitled for the diploma
+              Students failed in more than two courses shall not be entitled for the diploma.
             </li>
             <li>
-              English Communication - I marks are not included in the
-              calculation of total marks
+              Soft Skill Modules marks are not included in the
+              calculation of total marks.
             </li>
             <li>
-              
+              Student has failed in either Face the World Skill or Soft Skill Modules or both is passed provisionally. Student should pass these two subjects compulsarily for award of the diploma.
             </li>
           </ol>
                   
@@ -204,8 +210,8 @@ function App() {
         
         <div className="flex w-full gap-4 text-sm text-gray-600 justify-end">
           <div className="mt-10 text-sm">
-            <p className="font-bold text-xs mb-1"></p>
-            <p>Computer Generated Statement of marks</p>
+            <p className="font-bolder text-xs mb-1"></p>
+            <p className="font-bolder text-sm mb-1 italic">Computer Generated Statement of Marks</p>
           </div>
         </div>
       </div>
