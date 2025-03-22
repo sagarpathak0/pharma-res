@@ -1,17 +1,43 @@
-import React from 'react'
-import StudentResult from './first'
-import data from '../public/data/pharmacy_results.json'
-import { Student , Result, Subject} from '../utils/interface'
+import React, { useRef } from 'react';
+import StudentResult from './first';
+import first_dwarka from '../public/data/dwarka_first.json';
+import first_meerabai from '../public/data/meerabai_first.json';
+import { Student } from '../utils/interface';
 
 function App() {
-   const studentData = data as Student[];
+  const studentData = first_dwarka as Student[];
+//   const studentData = first_meerabai as Student[];
+
+
+  const printRef = useRef(null);
+
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <>
-      {studentData.map((student: Student) => (
-        <StudentResult student={student} />
-      ))}
-    </>
-  )
+    <div>
+      <button 
+        onClick={handlePrint} 
+        style={{ marginBottom: '10px', padding: '10px', cursor: 'pointer' }} 
+        className="no-print"
+      >
+        Print to PDF
+      </button>
+      <div ref={printRef}>
+        {studentData.map((student: Student, index: number) => (
+          <StudentResult key={index} student={student} />
+        ))}
+      </div>
+      <style>{`
+        @media print {
+          .no-print {
+            display: none;
+          }
+        }
+      `}</style>
+    </div>
+  );
 }
 
-export default App
+export default App;

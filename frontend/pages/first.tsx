@@ -1,10 +1,10 @@
 import React from "react";
 import Image from "next/image";
-import { Student } from "../utils/interface";
+import { Student, Result, Subject } from "../utils/interface";
 
 const StudentResult = ({ student }: { student: Student }) => {
   const marks = student.result[0]?.marks || [];
-
+  const month_year = student.result?.[0]?.marks?.[0]?.month_year || "June, 2023";
   // Identify failed subjects
   const failedSubjects = marks.filter((subject) => parseInt(subject.marks_obtained) < 40);
   const failedCount = failedSubjects.length;
@@ -44,7 +44,7 @@ const StudentResult = ({ student }: { student: Student }) => {
           <h1 className="text-sm font-bold text-gray-800 ">STATEMENT OF MARKS</h1>
           <h2 className="text-lg font-serif font-bold text-gray-700">{student.program}</h2>
           <h2 className="text-md font-mono font-bold text-gray-700">First Year</h2>
-          <h2 className="text-md font-mono font-bold text-gray-700">Examination Held in June 2023</h2>
+          <h2 className="text-md font-mono font-bold text-gray-700">Examination Held in {month_year}</h2>
         </div>
 
         {/* Student Info */}
@@ -76,7 +76,9 @@ const StudentResult = ({ student }: { student: Student }) => {
               </tr>
             </thead>
             <tbody>
-              {student.result[0].marks?.map((subject, index) => (
+              {[...(student.result[0]?.marks || [])]
+                .sort((a, b) => a.course_code.localeCompare(b.course_code))
+                .map((subject, index) => (
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="border border-gray-200 text-[12px] font-serif px-1 py-1 text-black text-center">
                     {index + 1}
@@ -99,9 +101,15 @@ const StudentResult = ({ student }: { student: Student }) => {
                 <td colSpan={3} className="border border-gray-200 px-4 py-1 text-right font-serif text-black text-[12px]">
                   TOTAL
                 </td>
-                <td className="border border-gray-200 px-4 py-1 text-black text-[12px] font-mono text-center">1000</td>
                 <td className="border border-gray-200 px-4 py-1 text-black text-[12px] font-mono text-center">
-                  {student.result[0].marks?.reduce((acc, subject) => acc + parseInt(subject.marks_obtained), 0)}
+                  {(student.result[0]?.marks?.filter(subject => subject.course_code !== "ER20-HF102").length || 0) * 100}
+                </td>
+                <td className="border border-gray-200 px-4 py-1 text-black text-[12px] font-mono text-center">
+                  {student.result[0].marks?.reduce((acc, subject) => 
+                    subject.course_code !== "ER20-HF102" 
+                      ? acc + parseInt(subject.marks_obtained) 
+                      : acc
+                  , 0)}
                 </td>
               </tr>
             </tbody>
