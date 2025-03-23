@@ -1,12 +1,12 @@
 import React, { useRef } from 'react';
-import StudentResult from './first';
+import StudentResult from '../components/first';
 import first_dwarka from '../public/data/dwarka_first.json';
 import first_meerabai from '../public/data/meerabai_first.json';
 import { Student } from '../utils/interface';
 
 function App() {
-  //const studentData = first_dwarka as Student[];
-  const studentData = first_meerabai as Student[];
+  const studentData = first_dwarka as Student[];
+  // const studentData = first_meerabai as Student[];
 
 
   const printRef = useRef(null);

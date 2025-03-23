@@ -133,9 +133,9 @@ const StudentResult = ({ student }: { student: Student }) => {
           <h3 className="font-medium text-gray-700">Instructions:</h3>
           <ol className="list-decimal pl-4">
             <li>Students failed in more than two courses shall not be entitled for the diploma.</li>
-            <li>Soft Skill Modules marks are not included in the calculation of total marks.</li>
+            <li>Soft Skills Modules marks are not included in the calculation of total marks.</li>
             <li>
-              Student has failed in either Face the World Skill or Soft Skill Modules or both is passed provisionally.
+              Student has failed in either Face the World Skill or Soft Skills Modules or both is passed provisionally.
               Student should pass these two subjects compulsorily for award of the diploma.
             </li>
           </ol>
