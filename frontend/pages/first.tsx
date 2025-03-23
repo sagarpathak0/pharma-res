@@ -4,7 +4,7 @@ import { Student, Result, Subject } from "../utils/interface";
 
 const StudentResult = ({ student }: { student: Student }) => {
   const marks = student.result[0]?.marks || [];
-  const month_year = student.result?.[0]?.marks?.[0]?.month_year || "June, 2023";
+  const month_year = student.result?.[0]?.marks?.[0]?.month_year || "June, 2024";
   // Identify failed subjects
   const failedSubjects = marks.filter((subject) => parseInt(subject.marks_obtained) < 40);
   const failedCount = failedSubjects.length;

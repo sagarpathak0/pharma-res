@@ -5,8 +5,8 @@ import first_meerabai from '../public/data/meerabai_first.json';
 import { Student } from '../utils/interface';
 
 function App() {
-  const studentData = first_dwarka as Student[];
-//   const studentData = first_meerabai as Student[];
+  //const studentData = first_dwarka as Student[];
+  const studentData = first_meerabai as Student[];
 
 
   const printRef = useRef(null);
