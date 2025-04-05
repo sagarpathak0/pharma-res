@@ -1,26 +1,29 @@
--- Students table
-CREATE TABLE IF NOT EXISTS students (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  enrollment_no VARCHAR(50) NOT NULL UNIQUE,
-  year VARCHAR(50) NOT NULL,
-  campus_name VARCHAR(255) NOT NULL
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS students CASCADE;
+DROP TABLE IF EXISTS course_results CASCADE;
+
+-- Student table
+CREATE TABLE IF NOT EXISTS student (
+  roll_no VARCHAR(50) PRIMARY KEY,
+  student_name VARCHAR(255) NOT NULL,
+  program VARCHAR(50) NOT NULL,
+  campus VARCHAR(255) NOT NULL
 );
 
--- Course Results table
-CREATE TABLE IF NOT EXISTS course_results (
-  id SERIAL PRIMARY KEY,
-  student_id INTEGER REFERENCES students(id),
-  course_code VARCHAR(50) NOT NULL,
+-- Course table
+CREATE TABLE IF NOT EXISTS course (
+  course_code VARCHAR(50) PRIMARY KEY,
   course_name VARCHAR(255) NOT NULL,
-  max_marks INTEGER NOT NULL,
-  marks_obtained INTEGER NOT NULL,
-  CONSTRAINT fk_student 
-    FOREIGN KEY(student_id) 
-    REFERENCES students(id)
-    ON DELETE CASCADE
+  year INT NOT NULL
 );
 
--- Indexes for performance
-CREATE INDEX idx_student_id ON course_results(student_id);
-CREATE INDEX idx_enrollment_no ON students(enrollment_no);
+-- Result table
+CREATE TABLE IF NOT EXISTS result (
+  roll_no VARCHAR(50),
+  course_code VARCHAR(50),
+  month_year VARCHAR(50) NOT NULL,
+  acad_year VARCHAR(50) NOT NULL,
+  marks VARCHAR(10),
+  CONSTRAINT fk_roll_no FOREIGN KEY(roll_no) REFERENCES student(roll_no) ON DELETE CASCADE,
+  CONSTRAINT fk_course_code FOREIGN KEY(course_code) REFERENCES course(course_code) ON DELETE CASCADE
+);

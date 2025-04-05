@@ -1,28 +1,31 @@
 import pool from '../db';
 
-// Interfaces that should match your existing database structure
+// Interfaces matching your existing database tables
 export interface Student {
-  id: number;
-  name: string;
-  enrollment_no: string;
-  year: string;
-  campus_name: string;
-  // Add any additional fields from your existing schema
+  roll_no: string;
+  student_name: string;
+  program: string;
+  campus: string;
 }
 
-export interface CourseResult {
-  id: number;
-  student_id: number;
+export interface Course {
   course_code: string;
   course_name: string;
-  max_marks: number;
-  marks_obtained: number;
-  // Add any additional fields from your existing schema
+  year: number;
 }
 
-export interface StudentResult {
+export interface Result {
+  roll_no: string;
+  course_code: string;
+  month_year: string;
+  acad_year: string;
+  marks: string;
+}
+
+// Renamed to clarify this is not a real table but an aggregated model
+export interface StudentAggregate {
   student: Student;
-  courses: CourseResult[];
+  results: Result[];
   totals: {
     maxMarks: number;
     marksObtained: number;
@@ -31,76 +34,94 @@ export interface StudentResult {
 }
 
 export async function getStudents(): Promise<Student[]> {
-  // Adjust query to match your existing table/column names
-  const query = 'SELECT * FROM students';
+  const query = 'SELECT * FROM student ORDER BY student_name';
   const result = await pool.query(query);
   return result.rows;
 }
 
-export async function getStudentByEnrollment(enrollmentNo: string): Promise<Student | null> {
-  // Added this method to search by enrollment number
-  const result = await pool.query('SELECT * FROM students WHERE enrollment_no = $1', [enrollmentNo]);
+export async function getStudentByRollNo(rollNo: string): Promise<Student | null> {
+  const result = await pool.query('SELECT * FROM student WHERE roll_no = $1', [rollNo]);
   return result.rows.length > 0 ? result.rows[0] : null;
 }
 
-export async function getStudentById(id: number): Promise<Student | null> {
-  const result = await pool.query('SELECT * FROM students WHERE id = $1', [id]);
-  return result.rows.length > 0 ? result.rows[0] : null;
-}
-
-export async function getStudentResults(studentId: number): Promise<CourseResult[]> {
-  // Adjust query to match your existing table/column names
+export async function getResultsByRollNo(rollNo: string): Promise<Result[]> {
   const result = await pool.query(
-    'SELECT * FROM course_results WHERE student_id = $1 ORDER BY id',
-    [studentId]
+    'SELECT * FROM result WHERE roll_no = $1 ORDER BY course_code',
+    [rollNo]
   );
   return result.rows;
 }
 
-export async function getFullStudentResult(studentId: number): Promise<StudentResult | null> {
-  const student = await getStudentById(studentId);
+// Rename return type from StudentResult to StudentAggregate
+export async function getFullStudentResult(rollNo: string): Promise<StudentAggregate | null> {
+  const student = await getStudentByRollNo(rollNo);
   if (!student) return null;
-  
-  const courses = await getStudentResults(studentId);
-  
-  // Calculate totals (exclude any special courses if needed)
-  const totals = courses.reduce(
-    (acc, course) => {
-      // You might want to exclude certain courses from total calculation
-      // For example, soft skills modules
-      if (!course.course_code.includes('HF')) { // Assuming HF in code indicates modules to exclude
-        acc.maxMarks += course.max_marks;
-        acc.marksObtained += course.marks_obtained;
+
+  const results = await getResultsByRollNo(rollNo);
+
+  // Calculate totals
+  const totals = results.reduce(
+    (acc, result) => {
+      const marks = parseInt(result.marks, 10);
+      if (!isNaN(marks)) {
+        acc.maxMarks += 100; // Assuming max marks for each course is 100
+        acc.marksObtained += marks;
       }
       return acc;
     },
     { maxMarks: 0, marksObtained: 0 }
   );
-  
+
   // Determine result
   const percentage = (totals.marksObtained / totals.maxMarks) * 100;
   let result = 'FAIL';
-  
+
   // Count failing courses
-  const failingCourses = courses.filter(course => {
-    const percentage = (course.marks_obtained / course.max_marks) * 100;
-    return percentage < 50;
+  const failingCourses = results.filter(result => {
+    const marks = parseInt(result.marks, 10);
+    return !isNaN(marks) && marks < 50; // Assuming passing marks is 50
   });
-  
-  // Apply result rules - adjust these to match your grading system
+
   if (failingCourses.length > 2) {
     result = 'FAIL';
   } else {
     if (percentage >= 75) result = 'PASS WITH DISTINCTION';
     else if (percentage >= 60) result = 'PASS WITH FIRST DIVISION';
     else if (percentage >= 50) result = 'PASS';
-    else result = 'FAIL';
   }
-  
+
   return {
     student,
-    courses,
+    results,
     totals,
     result
   };
+}
+
+// Add this function to allow creating a new student
+export async function createStudent(student: Omit<Student, 'roll_no'>): Promise<Student> {
+  const query = `
+    INSERT INTO student (roll_no, student_name, program, campus)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+  `;
+  // Generate a roll_no any way you prefer, e.g., a random or sequential ID
+  const rollNo = 'R_' + Math.floor(Math.random() * 1000000);
+  const values = [rollNo, student.student_name, student.program, student.campus];
+  
+  const result = await pool.query(query, values);
+  return result.rows[0];
+}
+
+// Add this function to allow inserting a course result
+export async function addCourseResult(rollNo: string, courseCode: string, marksObtained: number): Promise<Result> {
+  const query = `
+    INSERT INTO result (roll_no, course_code, marks, month_year, acad_year)
+    VALUES ($1, $2, $3, 'N/A', 'N/A')
+    RETURNING *
+  `;
+  const values = [rollNo, courseCode, marksObtained];
+  
+  const inserted = await pool.query(query, values);
+  return inserted.rows[0];
 }

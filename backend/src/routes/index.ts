@@ -1,8 +1,15 @@
 import { Router, Request, Response } from 'express';
-import { getStudents, getFullStudentResult, getStudentByEnrollment } from '../models/Student';
+import { 
+  getStudents, 
+  getFullStudentResult, 
+  getStudentByRollNo, 
+  createStudent,
+  addCourseResult 
+} from '../models/Student';
 
 export const router = Router();
 
+// Welcome endpoint
 router.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Welcome to the Pharmacy Results API' });
 });
@@ -26,19 +33,19 @@ router.get('/students', async (req: Request, res: Response) => {
   }
 });
 
-// Search student by enrollment
+// Search student by roll number
 router.get('/students/search', async (req: Request, res: Response) => {
   try {
-    const enrollmentNo = req.query.enrollment as string;
+    const rollNo = req.query.roll_no as string;
     
-    if (!enrollmentNo) {
+    if (!rollNo) {
       return res.status(400).json({
         success: false,
-        message: 'Enrollment number is required'
+        message: 'Roll number is required'
       });
     }
     
-    const student = await getStudentByEnrollment(enrollmentNo);
+    const student = await getStudentByRollNo(rollNo);
     
     if (!student) {
       return res.status(404).json({
@@ -47,7 +54,7 @@ router.get('/students/search', async (req: Request, res: Response) => {
       });
     }
     
-    const results = await getFullStudentResult(student.id);
+    const results = await getFullStudentResult(rollNo);
     
     res.json({ 
       success: true,
@@ -65,10 +72,10 @@ router.get('/students/search', async (req: Request, res: Response) => {
 });
 
 // Student results endpoint
-router.get('/students/:id/results', async (req: Request, res: Response) => {
+router.get('/students/:roll_no/results', async (req: Request, res: Response) => {
   try {
-    const studentId = parseInt(req.params.id);
-    const results = await getFullStudentResult(studentId);
+    const rollNo = req.params.roll_no;
+    const results = await getFullStudentResult(rollNo);
     
     if (!results) {
       return res.status(404).json({
@@ -91,3 +98,67 @@ router.get('/students/:id/results', async (req: Request, res: Response) => {
     });
   }
 });
+
+// Create new student
+router.post('/students', async (req: Request, res: Response) => {
+  try {
+    const { name, enrollment_no, year, campus_name } = req.body;
+    
+    if (!name || !enrollment_no || !year || !campus_name) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required: name, enrollment_no, year, campus_name'
+      });
+    }
+    
+    const newStudent = await createStudent({
+      student_name: name,
+      program: year, 
+      campus: campus_name
+    });
+    
+    res.status(201).json({
+      success: true,
+      message: 'Student created successfully',
+      data: newStudent
+    });
+  } catch (error) {
+    console.error('Error creating student:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating student',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Add course result
+router.post('/students/:roll_no/results', async (req: Request, res: Response) => {
+  try {
+    const rollNo = req.params.roll_no;
+    const { course_code, course_name, max_marks, marks_obtained } = req.body;
+    
+    if (!course_code || !course_name || !max_marks || marks_obtained === undefined) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required: course_code, course_name, max_marks, marks_obtained'
+      });
+    }
+
+    const courseResult = await addCourseResult(rollNo, course_code, marks_obtained);
+
+    res.status(201).json({
+      success: true,
+      message: 'Course result added successfully',
+      data: courseResult
+    });
+  } catch (error) {
+    console.error('Error adding course result:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error adding course result',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
