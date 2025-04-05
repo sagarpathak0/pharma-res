@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { 
   getStudents, 
-  getFullStudentResult, 
   getStudentByRollNo, 
   createStudent,
+  getFullStudentResult, 
   addCourseResult 
 } from '../models/Student';
 
@@ -36,30 +36,27 @@ router.get('/students', async (req: Request, res: Response) => {
 // Search student by roll number
 router.get('/students/search', async (req: Request, res: Response) => {
   try {
-    const rollNo = req.query.roll_no as string;
-    
-    if (!rollNo) {
+    const rollNumber = req.query.roll_number as string;
+
+    if (!rollNumber) {
       return res.status(400).json({
         success: false,
-        message: 'Roll number is required'
+        message: 'roll_number is required'
       });
     }
-    
-    const student = await getStudentByRollNo(rollNo);
-    
+
+    const student = await getStudentByRollNo(rollNumber);
     if (!student) {
       return res.status(404).json({
         success: false,
         message: 'Student not found'
       });
     }
-    
-    const results = await getFullStudentResult(rollNo);
-    
-    res.json({ 
+
+    res.json({
       success: true,
-      message: 'Student results fetched successfully',
-      data: results
+      message: 'Student fetched successfully',
+      data: student
     });
   } catch (error) {
     console.error('Error searching student:', error);
@@ -102,21 +99,22 @@ router.get('/students/:roll_no/results', async (req: Request, res: Response) => 
 // Create new student
 router.post('/students', async (req: Request, res: Response) => {
   try {
-    const { name, enrollment_no, year, campus_name } = req.body;
+    const { name, campus, program, admission_year } = req.body;
     
-    if (!name || !enrollment_no || !year || !campus_name) {
+    if (!name || !campus || !program || !admission_year) {
       return res.status(400).json({
         success: false,
-        message: 'All fields are required: name, enrollment_no, year, campus_name'
+        message: 'All fields are required: name, campus, program, admission_year'
       });
     }
-    
+
     const newStudent = await createStudent({
-      student_name: name,
-      program: year, 
-      campus: campus_name
+      name,
+      campus,
+      program,
+      admission_year: parseInt(admission_year, 10)
     });
-    
+
     res.status(201).json({
       success: true,
       message: 'Student created successfully',
@@ -136,16 +134,16 @@ router.post('/students', async (req: Request, res: Response) => {
 router.post('/students/:roll_no/results', async (req: Request, res: Response) => {
   try {
     const rollNo = req.params.roll_no;
-    const { course_code, course_name, max_marks, marks_obtained } = req.body;
+    const { course_code, course_name, max_marks, marks_obtained, exam_id } = req.body;
     
-    if (!course_code || !course_name || !max_marks || marks_obtained === undefined) {
+    if (!course_code || !course_name || !max_marks || marks_obtained === undefined || !exam_id) {
       return res.status(400).json({
         success: false,
-        message: 'All fields are required: course_code, course_name, max_marks, marks_obtained'
+        message: 'All fields are required: course_code, course_name, max_marks, marks_obtained, exam_id'
       });
     }
 
-    const courseResult = await addCourseResult(rollNo, course_code, marks_obtained);
+    const courseResult = await addCourseResult(rollNo, course_code, marks_obtained, exam_id, max_marks);
 
     res.status(201).json({
       success: true,
