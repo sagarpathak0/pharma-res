@@ -1,8 +1,15 @@
 import { Router, Request, Response } from 'express';
-import { getStudents, getFullStudentResult, getStudentByEnrollment } from '../models/Student';
+import { 
+  getStudents, 
+  getStudentByRollNo, 
+  createStudent,
+  getFullStudentResult, 
+  addCourseResult 
+} from '../models/Student';
 
 export const router = Router();
 
+// Welcome endpoint
 router.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Welcome to the Pharmacy Results API' });
 });
@@ -26,33 +33,30 @@ router.get('/students', async (req: Request, res: Response) => {
   }
 });
 
-// Search student by enrollment
+// Search student by roll number
 router.get('/students/search', async (req: Request, res: Response) => {
   try {
-    const enrollmentNo = req.query.enrollment as string;
-    
-    if (!enrollmentNo) {
+    const rollNumber = req.query.roll_number as string;
+
+    if (!rollNumber) {
       return res.status(400).json({
         success: false,
-        message: 'Enrollment number is required'
+        message: 'roll_number is required'
       });
     }
-    
-    const student = await getStudentByEnrollment(enrollmentNo);
-    
+
+    const student = await getStudentByRollNo(rollNumber);
     if (!student) {
       return res.status(404).json({
         success: false,
         message: 'Student not found'
       });
     }
-    
-    const results = await getFullStudentResult(student.id);
-    
-    res.json({ 
+
+    res.json({
       success: true,
-      message: 'Student results fetched successfully',
-      data: results
+      message: 'Student fetched successfully',
+      data: student
     });
   } catch (error) {
     console.error('Error searching student:', error);
@@ -65,10 +69,10 @@ router.get('/students/search', async (req: Request, res: Response) => {
 });
 
 // Student results endpoint
-router.get('/students/:id/results', async (req: Request, res: Response) => {
+router.get('/students/:roll_no/results', async (req: Request, res: Response) => {
   try {
-    const studentId = parseInt(req.params.id);
-    const results = await getFullStudentResult(studentId);
+    const rollNo = req.params.roll_no;
+    const results = await getFullStudentResult(rollNo);
     
     if (!results) {
       return res.status(404).json({
@@ -91,3 +95,68 @@ router.get('/students/:id/results', async (req: Request, res: Response) => {
     });
   }
 });
+
+// Create new student
+router.post('/students', async (req: Request, res: Response) => {
+  try {
+    const { name, campus, program, admission_year } = req.body;
+    
+    if (!name || !campus || !program || !admission_year) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required: name, campus, program, admission_year'
+      });
+    }
+
+    const newStudent = await createStudent({
+      name,
+      campus,
+      program,
+      admission_year: parseInt(admission_year, 10)
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Student created successfully',
+      data: newStudent
+    });
+  } catch (error) {
+    console.error('Error creating student:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating student',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Add course result
+router.post('/students/:roll_no/results', async (req: Request, res: Response) => {
+  try {
+    const rollNo = req.params.roll_no;
+    const { course_code, course_name, max_marks, marks_obtained, exam_id } = req.body;
+    
+    if (!course_code || !course_name || !max_marks || marks_obtained === undefined || !exam_id) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required: course_code, course_name, max_marks, marks_obtained, exam_id'
+      });
+    }
+
+    const courseResult = await addCourseResult(rollNo, course_code, marks_obtained, exam_id, max_marks);
+
+    res.status(201).json({
+      success: true,
+      message: 'Course result added successfully',
+      data: courseResult
+    });
+  } catch (error) {
+    console.error('Error adding course result:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error adding course result',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+

@@ -1,26 +1,43 @@
--- Students table
-CREATE TABLE IF NOT EXISTS students (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  enrollment_no VARCHAR(50) NOT NULL UNIQUE,
-  year VARCHAR(50) NOT NULL,
-  campus_name VARCHAR(255) NOT NULL
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS "Marks" CASCADE;
+DROP TABLE IF EXISTS "Exam" CASCADE;
+DROP TABLE IF EXISTS "Subject" CASCADE;
+DROP TABLE IF EXISTS "Student" CASCADE;
+
+CREATE TABLE "Student" (
+  roll_number VARCHAR(20) PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  campus VARCHAR(100) NOT NULL,
+  program VARCHAR(100) NOT NULL,
+  admission_year INT NOT NULL
 );
 
--- Course Results table
-CREATE TABLE IF NOT EXISTS course_results (
-  id SERIAL PRIMARY KEY,
-  student_id INTEGER REFERENCES students(id),
-  course_code VARCHAR(50) NOT NULL,
-  course_name VARCHAR(255) NOT NULL,
-  max_marks INTEGER NOT NULL,
-  marks_obtained INTEGER NOT NULL,
-  CONSTRAINT fk_student 
-    FOREIGN KEY(student_id) 
-    REFERENCES students(id)
-    ON DELETE CASCADE
+CREATE TABLE "Subject" (
+  subject_code VARCHAR(20) PRIMARY KEY,
+  subject_name VARCHAR(100) NOT NULL,
+  year INT NOT NULL
 );
 
--- Indexes for performance
-CREATE INDEX idx_student_id ON course_results(student_id);
-CREATE INDEX idx_enrollment_no ON students(enrollment_no);
+CREATE TABLE "Exam" (
+  exam_id VARCHAR(30) PRIMARY KEY,
+  exam_type VARCHAR(10) CHECK (exam_type IN ('Regular','Reappear')) NOT NULL,
+  exam_month VARCHAR(10) CHECK (exam_month IN ('June','December')) NOT NULL,
+  exam_year INT NOT NULL,
+  year INT NOT NULL,
+  UNIQUE (exam_type, exam_month, exam_year, year)
+);
+
+CREATE TABLE "Marks" (
+  roll_number VARCHAR(20),
+  subject_code VARCHAR(20),
+  exam_id VARCHAR(30),
+  marks_obtained FLOAT,
+  max_marks INT NOT NULL,
+  grade VARCHAR(10),
+  pass_fail BOOLEAN,
+  subject_year INT NOT NULL,
+  PRIMARY KEY (roll_number, subject_code, exam_id),
+  FOREIGN KEY (roll_number) REFERENCES "Student"(roll_number),
+  FOREIGN KEY (subject_code) REFERENCES "Subject"(subject_code),
+  FOREIGN KEY (exam_id) REFERENCES "Exam"(exam_id)
+);
