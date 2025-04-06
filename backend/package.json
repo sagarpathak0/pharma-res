@@ -6,8 +6,12 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "test": "jest"
+    "dev": "ts-node-dev --respawn --transpile-only server.ts",
+    "test": "jest",
+    "watch": "tsc -w",
+    "clean": "rimraf dist",
+    "lint": "eslint . --ext .ts",
+    "db:migrate": "ts-node src/db/schema.sql"
   },
   "dependencies": {
     "cors": "^2.8.5",

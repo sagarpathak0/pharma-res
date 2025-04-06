@@ -8,6 +8,9 @@ interface UploadState {
   success: boolean;
   fileName: string | null;
   progress: number;
+  processedData: any[] | null;  // Add this to store processed data
+  isProcessed: boolean;         // Add this to track if data is processed but not saved
+  isSaving: boolean;           // Add this to track database saving state
 }
 
 const AdminUpload: React.FC = () => {
@@ -16,7 +19,10 @@ const AdminUpload: React.FC = () => {
     error: null,
     success: false,
     fileName: null,
-    progress: 0
+    progress: 0,
+    processedData: null,
+    isProcessed: false,
+    isSaving: false
   });
   
   const [dragActive, setDragActive] = useState<boolean>(false);
@@ -51,40 +57,65 @@ const AdminUpload: React.FC = () => {
   
   const processFile = async (file: File) => {
     setUploadState({
+      ...uploadState,
       isLoading: true,
       error: null,
       success: false,
       fileName: file.name,
-      progress: 10
+      progress: 10,
+      processedData: null,
+      isProcessed: false
     });
 
-    try {
-      // Update progress to simulate processing
+    try { 
       setUploadState(prev => ({ ...prev, progress: 30 }));
       
       // Convert Excel to JSON
       const jsonData = await convertExcelToJson(file);
       
-      setUploadState(prev => ({ ...prev, progress: 70 }));
-      
-      // Send to backend
-      await uploadToBackend(jsonData);
-
-      setUploadState({
+      setUploadState(prev => ({
+        ...prev,
+        progress: 100,
         isLoading: false,
-        error: null,
-        success: true,
-        fileName: file.name,
-        progress: 100
-      });
+        processedData: jsonData,
+        isProcessed: true
+      }));
     } catch (error) {
       setUploadState({
+        ...uploadState,
         isLoading: false,
         error: error instanceof Error ? error.message : 'An error occurred',
         success: false,
         fileName: file.name,
-        progress: 0
+        progress: 0,
+        processedData: null,
+        isProcessed: false
       });
+    }
+  };
+
+  const handleSaveToDatabase = async () => {
+    if (!uploadState.processedData) return;
+  
+    setUploadState(prev => ({ ...prev, isSaving: true }));
+    
+    try {
+      await uploadToBackend(uploadState.processedData);
+      
+      setUploadState(prev => ({
+        ...prev,
+        isSaving: false,
+        success: true,
+        isProcessed: false,
+        processedData: null
+      }));
+    } catch (error) {
+      setUploadState(prev => ({
+        ...prev,
+        isSaving: false,
+        error: error instanceof Error ? error.message : 'Failed to save to database',
+        success: false
+      }));
     }
   };
 
@@ -172,12 +203,44 @@ const AdminUpload: React.FC = () => {
                   <FiCheckCircle className="h-5 w-5 text-green-500" />
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-green-800">Upload successful!</h3>
+                  <h3 className="text-sm font-medium text-green-800">Data saved successfully!</h3>
                   <p className="text-sm text-green-700 mt-1">
-                    The file has been processed and data is ready for use.
+                    The data has been processed and saved to the database.
                   </p>
                 </div>
               </div>
+            </div>
+          )}
+
+          {uploadState.isProcessed && uploadState.processedData && (
+            <div className="mt-6">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 mb-4">
+                <p className="text-sm text-yellow-700">
+                  File has been processed. Review the data and click below to save to database.
+                </p>
+              </div>
+              
+              <button
+                onClick={handleSaveToDatabase}
+                disabled={uploadState.isSaving}
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
+                  ${uploadState.isSaving 
+                    ? 'bg-blue-400 cursor-not-allowed' 
+                    : 'bg-blue-600 hover:bg-blue-700'
+                  } transition-colors duration-200 ease-in-out`}
+              >
+                {uploadState.isSaving ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Saving to Database...
+                  </>
+                ) : (
+                  'Save to Database'
+                )}
+              </button>
             </div>
           )}
           
