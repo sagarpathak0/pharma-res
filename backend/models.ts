@@ -61,6 +61,7 @@ export interface StudentResult {
   campus: string;
   program: string;
   admission_year: string;
+  type: string;
   result: Array<{
     marks: Array<{
       course_code: string;
@@ -109,7 +110,7 @@ export async function processAndInsertResults(data: StudentResult[]): Promise<{ 
           const [month, yearStr] = mark.month_year.split(", ");
           const shortMonth = month.substring(0, 3).toUpperCase();
           const shortYear = yearStr.substring(2);
-          const examType = 'R';
+          const examType = student.type === 'Regular' ? 'R' : 'RP';
           const yearLabel = `Y${resultSet.year}`;
           const exam_id = `${examType}_${shortMonth}_${shortYear}_${yearLabel}`;
 
@@ -133,7 +134,7 @@ export async function processAndInsertResults(data: StudentResult[]): Promise<{ 
           // Insert exam
           await client.query(insertExamQuery, [
             exam_id,
-            'Regular',
+            student.type,
             month,
             parseInt(yearStr),
             resultSet.year

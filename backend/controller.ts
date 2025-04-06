@@ -3,6 +3,7 @@ import { processAndInsertResults } from './models';
 import { validateStudentData } from './utils/validation';
 
 export async function processResults(req: Request, res: Response) {
+  console.log('Processing results...');
   try {
     const data = req.body;
     console.log('Received data:', data);

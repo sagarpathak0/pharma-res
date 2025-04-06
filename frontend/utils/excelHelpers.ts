@@ -36,28 +36,18 @@ export const convertExcelToJson = async (file: File): Promise<Student[]> => {
 
 export const uploadToBackend = async (data: Student[]): Promise<void> => {
   try {
-    // Dummy API endpoint - replace with your actual endpoint
-    // const response = await axios.post('http://localhost:3001/api/results/upload', {
-    //   data,
-    //   timestamp: new Date().toISOString(),
-    //   uploadedBy: 'admin'
-    // }, {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     // Add any auth headers if needed
-    //     // 'Authorization': `Bearer ${token}`
-    //   }
-    // });
+    const response = await axios.post('http://localhost:5000/api/results', data, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
 
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Upload failed');
+    }
 
+    return response.data;
 
-    // if (!response.data.success) {
-    //   throw new Error(response.data.message || 'Upload failed');
-    // }
-
-    // return response.data;
-
-    console.log(data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || 'Network error occurred');
