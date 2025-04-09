@@ -1,7 +1,6 @@
 import { Student } from './interface';
 import * as XLSX from 'xlsx';
-import axios from 'axios';
-
+// import axios from 'axios';
 
 export const convertExcelToJson = async (file: File): Promise<Student[]> => {
   return new Promise((resolve, reject) => {
@@ -110,16 +109,13 @@ function processExcelData(data: any[][]): Student[] {
     // Find essential column indices
     const rollIdx = headers.findIndex(h => h.includes('roll'));
     const nameIdx = headers.findIndex(h => h.includes('name'));
-    // const campusIdx = headers.findIndex(h => h.includes('campus'));
-    // const programIdx = headers.findIndex(h => h.includes('program') || h.includes('programme'));
-    // const yearIdx = headers.findIndex(h => h.includes('year') && !h.includes('month'));
-    // const monthYearIdx = headers.findIndex(h => h.includes('month') && h.includes('year'));
+    const typeIdx = headers.findIndex(h => h.includes('type')); // Add index for type column
     
     // Extract global fields with defaults
     const campus = global_info["Campus"] || "";
     const program = global_info["Programme"] || "";
     const examMonthYear = global_info["Month and Year of Exam"] || "Month and Year of Exam";
-    const studentType = global_info["Type"] || "Regular";
+    const defaultExamType = global_info["Type"] || "Regular"; // Use as fallback
     const admissionYear = global_info["Admission Year"] || "";
     let studentYear = 1;
     
@@ -133,7 +129,7 @@ function processExcelData(data: any[][]): Student[] {
     // Subject info rows are relative to the header row
     const subjectCodeRow = headerRow - 1;
     const subjectNameRow = headerRow;
-    const subjectStartCol = Math.max(rollIdx, nameIdx) + 1;
+    const subjectStartCol = Math.max(rollIdx, nameIdx, typeIdx) + 1; // Update to include typeIdx
     
     // Extract subject details
     const subjects: { code: string; name: string; column: number }[] = [];
@@ -178,13 +174,18 @@ function processExcelData(data: any[][]): Student[] {
         // Extract name
         const name = row[nameIdx] ? String(row[nameIdx]).trim() : '';
         
+        // Extract type from row or use default
+        const examType = typeIdx >= 0 && row[typeIdx] 
+            ? String(row[typeIdx]).trim() 
+            : defaultExamType;
+        
         // Create student object with global info
         const student: Student = {
             name,
             roll,
             campus,
             program,
-            type: studentType,
+            type: examType, // Now using the value from the row
             admission_year: admissionYear,
             result: [
                 {
