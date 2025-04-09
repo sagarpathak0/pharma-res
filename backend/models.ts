@@ -73,6 +73,13 @@ export interface StudentResult {
   }>;
 }
 
+// Add interface for duplicate entries
+interface DuplicateEntry {
+  roll: string;
+  subject: string;
+  exam_id: string;
+}
+
 // Make sure to update the exports at top of file:
 // Removed redundant export statement to avoid conflicts
 
@@ -87,13 +94,55 @@ function validateExamMonth(month: string): boolean {
   return validMonths.includes(month);
 }
 
-// Modify the processAndInsertResults function to include the check
-export async function processAndInsertResults(data: StudentResult[]): Promise<{ success: boolean; message: string }> {
+// Modify the processAndInsertResults function
+export async function processAndInsertResults(data: StudentResult[]): Promise<{ success: boolean; message: string; duplicates?: DuplicateEntry[] }> {
   const client = await pool.connect();
+  const duplicates: DuplicateEntry[] = [];
   
   try {
     await client.query('BEGIN');
 
+    // First pass - check for all duplicates
+    for (const student of data) {
+      for (const resultSet of student.result) {
+        for (const mark of resultSet.marks) {
+          const [month, yearStr] = mark.month_year.split(", ");
+          const shortMonth = month.substring(0, 3).toUpperCase();
+          const shortYear = yearStr.substring(2);
+          const examType = student.type === 'Regular' ? 'R' : 'RP';
+          const yearLabel = `Y${resultSet.year}`;
+          const exam_id = `${examType}_${shortMonth}_${shortYear}_${yearLabel}`;
+
+          // Check for duplicates
+          const exists = await checkExistingMarks(
+            client, 
+            student.roll.toString(), 
+            mark.course_code, 
+            exam_id
+          );
+
+          if (exists) {
+            duplicates.push({
+              roll: student.roll.toString(),
+              subject: mark.course_code,
+              exam_id: exam_id
+            });
+          }
+        }
+      }
+    }
+
+    // If duplicates found, return error with all duplicates
+    if (duplicates.length > 0) {
+      await client.query('ROLLBACK');
+      return {
+        success: false,
+        message: 'Duplicate entries found',
+        duplicates: duplicates
+      };
+    }
+
+    // If no duplicates, proceed with insertion
     for (const student of data) {
       // Insert student
       await client.query(insertStudentQuery, [
@@ -106,23 +155,13 @@ export async function processAndInsertResults(data: StudentResult[]): Promise<{ 
 
       for (const resultSet of student.result) {
         for (const mark of resultSet.marks) {
-          // Generate exam_id
+          // Generate exam_id again
           const [month, yearStr] = mark.month_year.split(", ");
           const shortMonth = month.substring(0, 3).toUpperCase();
           const shortYear = yearStr.substring(2);
           const examType = student.type === 'Regular' ? 'R' : 'RP';
           const yearLabel = `Y${resultSet.year}`;
           const exam_id = `${examType}_${shortMonth}_${shortYear}_${yearLabel}`;
-
-          // Check for duplicates
-          const exists = await checkExistingMarks(client, student.roll.toString(), mark.course_code, exam_id);
-          if (exists) {
-            await client.query('ROLLBACK');
-            return {
-              success: false,
-              message: `Duplicate entry found for Roll No: ${student.roll}, Subject: ${mark.course_code}`
-            };
-          }
 
           // Insert subject
           await client.query(insertSubjectQuery, [
@@ -142,6 +181,14 @@ export async function processAndInsertResults(data: StudentResult[]): Promise<{ 
 
           // Process marks
           const marksObtained = parseFloat(mark.marks_obtained);
+          if (!validateMarks(marksObtained)) {
+            await client.query('ROLLBACK');
+            return {
+              success: false,
+              message: `Invalid marks: ${marksObtained} for Roll No: ${student.roll}, Subject: ${mark.course_code}`
+            };
+          }
+
           const maxMarks = 100;
           const grade = calculateGrade(marksObtained);
           const passFail = marksObtained >= 40;
@@ -170,10 +217,7 @@ export async function processAndInsertResults(data: StudentResult[]): Promise<{ 
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error in processAndInsertResults:', error);
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : 'Unknown error occurred'
-    };
+    return handleDatabaseError(error);
   } finally {
     client.release();
   }

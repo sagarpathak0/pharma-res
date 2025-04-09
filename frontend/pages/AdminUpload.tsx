@@ -2,15 +2,32 @@ import React, { useState } from 'react';
 import { convertExcelToJson, uploadToBackend } from '../utils/excelHelpers';
 import { FiUpload, FiCheckCircle, FiAlertTriangle } from 'react-icons/fi';
 
+interface DuplicateEntry {
+  roll: string;
+  subject: string;
+  exam_id: string;
+}
+
+interface GroupedDuplicates {
+  [rollNumber: string]: {
+    roll: string;
+    subjects: Array<{
+      subject: string;
+      exam_id: string;
+    }>;
+  };
+}
+
 interface UploadState {
   isLoading: boolean;
   error: string | null;
   success: boolean;
   fileName: string | null;
   progress: number;
-  processedData: any[] | null;  // Add this to store processed data
-  isProcessed: boolean;         // Add this to track if data is processed but not saved
-  isSaving: boolean;           // Add this to track database saving state
+  processedData: any[] | null;
+  isProcessed: boolean;
+  isSaving: boolean;
+  duplicates: DuplicateEntry[] | null;
 }
 
 const AdminUpload: React.FC = () => {
@@ -22,7 +39,8 @@ const AdminUpload: React.FC = () => {
     progress: 0,
     processedData: null,
     isProcessed: false,
-    isSaving: false
+    isSaving: false,
+    duplicates: null
   });
   
   const [dragActive, setDragActive] = useState<boolean>(false);
@@ -64,7 +82,8 @@ const AdminUpload: React.FC = () => {
       fileName: file.name,
       progress: 10,
       processedData: null,
-      isProcessed: false
+      isProcessed: false,
+      duplicates: null
     });
 
     try { 
@@ -89,7 +108,8 @@ const AdminUpload: React.FC = () => {
         fileName: file.name,
         progress: 0,
         processedData: null,
-        isProcessed: false
+        isProcessed: false,
+        duplicates: null
       });
     }
   };
@@ -97,26 +117,51 @@ const AdminUpload: React.FC = () => {
   const handleSaveToDatabase = async () => {
     if (!uploadState.processedData) return;
   
-    setUploadState(prev => ({ ...prev, isSaving: true }));
+    setUploadState(prev => ({ ...prev, isSaving: true, error: null }));
     
     try {
-      await uploadToBackend(uploadState.processedData);
+      const result = await uploadToBackend(uploadState.processedData);
       
-      setUploadState(prev => ({
-        ...prev,
-        isSaving: false,
-        success: true,
-        isProcessed: false,
-        processedData: null
-      }));
+      if (result.success) {
+        setUploadState(prev => ({
+          ...prev,
+          isSaving: false,
+          success: true,
+          processedData: null,
+          isProcessed: false
+        }));
+      } else if (result.duplicates) {
+        setUploadState(prev => ({
+          ...prev,
+          isSaving: false,
+          error: 'Duplicate entries found',
+          duplicates: result.duplicates || null
+        }));
+      }
     } catch (error) {
       setUploadState(prev => ({
         ...prev,
         isSaving: false,
-        error: error instanceof Error ? error.message : 'Failed to save to database',
-        success: false
+        error: error instanceof Error ? error.message : 'Failed to save data',
+        duplicates: null
       }));
     }
+  };
+
+  const groupDuplicatesByRoll = (duplicates: DuplicateEntry[]): GroupedDuplicates => {
+    return duplicates.reduce((acc: GroupedDuplicates, curr) => {
+      if (!acc[curr.roll]) {
+        acc[curr.roll] = {
+          roll: curr.roll,
+          subjects: []
+        };
+      }
+      acc[curr.roll].subjects.push({
+        subject: curr.subject,
+        exam_id: curr.exam_id
+      });
+      return acc;
+    }, {});
   };
 
   return (
@@ -178,11 +223,14 @@ const AdminUpload: React.FC = () => {
                   style={{ width: `${uploadState.progress}%` }}
                 ></div>
               </div>
+              <p className="text-sm text-gray-600">
+                Processing {uploadState.processedData?.length || 0} records
+              </p>
               <p className="mt-2 text-xs text-gray-600">Converting Excel data and preparing for upload...</p>
             </div>
           )}
 
-          {uploadState.error && (
+          {uploadState.error && !uploadState.duplicates && (
             <div className="mt-6 bg-red-50 border border-red-200 rounded-md p-4">
               <div className="flex">
                 <div className="flex-shrink-0">
@@ -207,6 +255,60 @@ const AdminUpload: React.FC = () => {
                   <p className="text-sm text-green-700 mt-1">
                     The data has been processed and saved to the database.
                   </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {uploadState.duplicates && uploadState.duplicates.length > 0 && (
+            <div className="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3 w-full">
+                  <h3 className="text-sm font-medium text-yellow-800">
+                    Duplicate Entries Found
+                  </h3>
+                  <div className="mt-2">
+                    <p className="text-sm text-yellow-700 mb-4">
+                      The following roll numbers have duplicate entries:
+                    </p>
+                    <div className="space-y-2">
+                      {Object.values(groupDuplicatesByRoll(uploadState.duplicates)).map((group) => (
+                        <details key={group.roll} className="bg-white rounded-lg shadow-sm">
+                          <summary className="cursor-pointer p-3 font-medium text-gray-700 hover:bg-gray-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                            Roll No: {group.roll} ({group.subjects.length} duplicate{group.subjects.length > 1 ? 's' : ''})
+                          </summary>
+                          <div className="p-3 pt-0">
+                            <table className="min-w-full divide-y divide-gray-200">
+                              <thead>
+                                <tr>
+                                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject Code</th>
+                                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam ID</th>
+                                </tr>
+                              </thead>
+                              <tbody className="bg-white divide-y divide-gray-200">
+                                {group.subjects.map((subject, idx) => (
+                                  <tr key={idx} className="hover:bg-gray-50">
+                                    <td className="px-3 py-2 text-sm text-gray-500">{subject.subject}</td>
+                                    <td className="px-3 py-2 text-sm text-gray-500">{subject.exam_id}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </details>
+                      ))}
+                    </div>
+                    <div className="mt-4">
+                      <p className="text-sm text-yellow-700">
+                        Please review these entries and remove duplicates before trying again.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -241,6 +343,15 @@ const AdminUpload: React.FC = () => {
                   'Save to Database'
                 )}
               </button>
+            </div>
+          )}
+
+          {uploadState.processedData && (
+            <div className="mt-6 overflow-x-auto">
+              <h3 className="text-lg font-medium mb-2">Preview</h3>
+              <table className="min-w-full divide-y divide-gray-200">
+                {/* Add preview table here */}
+              </table>
             </div>
           )}
           

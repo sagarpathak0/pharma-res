@@ -34,25 +34,44 @@ export const convertExcelToJson = async (file: File): Promise<Student[]> => {
   });
 };
 
-export const uploadToBackend = async (data: Student[]): Promise<void> => {
+export const uploadToBackend = async (data: any[]): Promise<{
+  success: boolean;
+  message: string;
+  duplicates?: Array<{
+    roll: string;
+    subject: string;
+    exam_id: string;
+  }>;
+}> => {
   try {
-    const response = await axios.post('http://localhost:5000/api/results', data, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/results`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify(data)
     });
 
-    if (!response.data.success) {
-      throw new Error(response.data.message || 'Upload failed');
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw result;
     }
 
-    return response.data;
-
+    return result;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.message || 'Network error occurred');
+    if (error && typeof error === 'object' && 'duplicates' in error) {
+      return error as {
+        success: false;
+        message: string;
+        duplicates: Array<{
+          roll: string;
+          subject: string;
+          exam_id: string;
+        }>;
+      };
     }
-    throw new Error('Failed to upload data to server');
+    throw new Error('Failed to upload data');
   }
 };
 

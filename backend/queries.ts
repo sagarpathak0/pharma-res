@@ -49,3 +49,31 @@ export const insertMarksQuery = `
     pass_fail = EXCLUDED.pass_fail,
     subject_year = EXCLUDED.subject_year;
 `;
+
+export const searchResultsQuery = `
+  WITH academic_year_calc AS (
+    SELECT m.*, s.name, s.program, s.campus, s.admission_year,
+           sub.subject_name, e.exam_type, e.exam_month, e.exam_year,
+           CASE 
+             WHEN e.exam_month = 'June' THEN 
+               (e.exam_year - s.admission_year)
+             WHEN e.exam_month = 'December' THEN 
+               (e.exam_year - s.admission_year + 1)
+           END as study_year
+    FROM "Marks" m
+    JOIN "Student" s ON m.roll_number = s.roll_number
+    JOIN "Subject" sub ON m.subject_code = sub.subject_code
+    JOIN "Exam" e ON m.exam_id = e.exam_id
+    WHERE m.roll_number = $1 
+    AND e.exam_type = $2
+  )
+  SELECT *, 
+         CASE 
+           WHEN exam_month = 'June' THEN 
+             CONCAT(exam_year - 1, '-', exam_year)
+           WHEN exam_month = 'December' THEN
+             CONCAT(exam_year, '-', exam_year + 1)
+         END as academic_year
+  FROM academic_year_calc
+  WHERE study_year <= 4;  -- Assuming 4-year maximum program duration
+`;
