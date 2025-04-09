@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { processAndInsertResults } from './models';
 import { validateStudentData } from './utils/validation';
-import { searchResultsByRollNo } from './service';
+import { searchResultsByRollNo, fetchAcademicYearsByRollNo } from './service';
 
 export async function processResults(req: Request, res: Response) {
   try {
@@ -57,9 +57,8 @@ export async function processResults(req: Request, res: Response) {
 export async function searchResults(req: Request, res: Response) {
   try {
     const { rollNumber, academicYear, examType } = req.body;
-
-    // Set proper content type
-    res.setHeader('Content-Type', 'application/json');
+    
+    console.log('Search Parameters:', { rollNumber, academicYear, examType });
 
     // Validate input
     if (!rollNumber || !academicYear || !examType) {
@@ -88,6 +87,23 @@ export async function searchResults(req: Request, res: Response) {
     res.status(500).json({
       success: false,
       message: error instanceof Error ? error.message : 'Internal server error'
+    });
+  }
+}
+
+export async function getAcademicYears(req: Request, res: Response) {
+  try {
+    const { rollNo } = req.params;
+    const years = await fetchAcademicYearsByRollNo(rollNo);
+    
+    res.status(200).json({
+      success: true,
+      years
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error instanceof Error ? error.message : 'Failed to fetch academic years'
     });
   }
 }

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { processResults, searchResults } from './controller';
+import { processResults, searchResults, getAcademicYears } from './controller';
 
 export const router = Router();
 
@@ -8,6 +8,9 @@ router.post('/results', processResults);
 
 // Results search route
 router.post('/results/search', searchResults);
+
+// Academic years route
+router.get('/academic-years/:rollNo', getAcademicYears);
 
 // Base route
 router.get('/', (req, res) => {

@@ -54,26 +54,50 @@ export const searchResultsQuery = `
   WITH academic_year_calc AS (
     SELECT m.*, s.name, s.program, s.campus, s.admission_year,
            sub.subject_name, e.exam_type, e.exam_month, e.exam_year,
+           (e.exam_year - s.admission_year + 1) as study_year,
            CASE 
              WHEN e.exam_month = 'June' THEN 
-               (e.exam_year - s.admission_year)
-             WHEN e.exam_month = 'December' THEN 
-               (e.exam_year - s.admission_year + 1)
-           END as study_year
+               CONCAT(s.admission_year, '-', s.admission_year + 1)
+             WHEN e.exam_month = 'December' THEN
+               CONCAT(s.admission_year, '-', s.admission_year + 1)
+           END as academic_year
     FROM "Marks" m
     JOIN "Student" s ON m.roll_number = s.roll_number
     JOIN "Subject" sub ON m.subject_code = sub.subject_code
     JOIN "Exam" e ON m.exam_id = e.exam_id
     WHERE m.roll_number = $1 
     AND e.exam_type = $2
+    AND m.subject_year <= 4
   )
-  SELECT *, 
-         CASE 
-           WHEN exam_month = 'June' THEN 
-             CONCAT(exam_year - 1, '-', exam_year)
-           WHEN exam_month = 'December' THEN
-             CONCAT(exam_year, '-', exam_year + 1)
-         END as academic_year
+  SELECT *
   FROM academic_year_calc
-  WHERE study_year <= 4;  -- Assuming 4-year maximum program duration
+  WHERE academic_year = $3
+  ORDER BY subject_code;
+`;
+
+export const fetchAcademicYearsQuery = `
+  WITH student_years AS (
+    SELECT DISTINCT 
+      s.admission_year,
+      e.exam_year,
+      e.exam_month,
+      CONCAT(
+        CASE 
+          WHEN e.exam_month = 'June' THEN e.exam_year - 1
+          WHEN e.exam_month = 'December' THEN e.exam_year
+        END,
+        '-',
+        CASE 
+          WHEN e.exam_month = 'June' THEN e.exam_year
+          WHEN e.exam_month = 'December' THEN e.exam_year + 1
+        END
+      ) as academic_year
+    FROM "Student" s
+    JOIN "Marks" m ON s.roll_number = m.roll_number
+    JOIN "Exam" e ON m.exam_id = e.exam_id
+    WHERE s.roll_number = $1
+  )
+  SELECT academic_year
+  FROM student_years
+  ORDER BY exam_year;
 `;
