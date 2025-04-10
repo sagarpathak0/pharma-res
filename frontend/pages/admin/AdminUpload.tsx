@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { convertExcelToJson, uploadToBackend } from '../utils/excelHelpers';
+import { convertExcelToJson, uploadToBackend } from '../../utils/excelHelpers';
 import { FiUpload, FiCheckCircle, FiAlertTriangle } from 'react-icons/fi';
 
 interface DuplicateEntry {
