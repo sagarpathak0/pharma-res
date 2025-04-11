@@ -43,6 +43,7 @@ export const uploadToBackend = async (data: any[]): Promise<{
   }>;
 }> => {
   try {
+    console.log('Uploading data to backend:', data);
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/results`, {
       method: 'POST',
       headers: {
