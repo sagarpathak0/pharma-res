@@ -11,10 +11,10 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: parseInt(process.env.DB_PORT || '5432'),
-  // ssl: {
-  //   rejectUnauthorized: false // For cloud-hosted PostgreSQL services like Aiven
-  // }
-  ssl: false //! */ Disable SSL for local development to be removed 
+  ssl: {
+    rejectUnauthorized: false // For cloud-hosted PostgreSQL services like Aiven
+  }
+  // ssl: false //! */ Disable SSL for local development to be removed 
 });
 
 // Test connection
