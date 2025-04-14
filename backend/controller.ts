@@ -1,7 +1,12 @@
 import { Request, Response } from 'express';
 import { processAndInsertResults } from './models';
 import { validateStudentData } from './utils/validation';
-import { searchResultsByRollNo, fetchAcademicYearsByRollNo } from './service';
+import { 
+  searchResultsByRollNo, 
+  fetchAcademicYearsByRollNo,
+  updateCampus,
+  updateMarks 
+} from './service';
 
 export async function processResults(req: Request, res: Response) {
   try {
@@ -104,6 +109,113 @@ export async function getAcademicYears(req: Request, res: Response) {
     res.status(500).json({
       success: false,
       message: error instanceof Error ? error.message : 'Failed to fetch academic years'
+    });
+  }
+}
+
+export async function updateStudentCampus(req: Request, res: Response) {
+  try {
+    const { rollNo } = req.params;
+    const { campus } = req.body;
+    
+    if (!rollNo || !campus) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing roll number or campus'
+      });
+    }
+    
+    const result = await updateCampus(rollNo, campus);
+    
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: 'Student not found'
+      });
+    }
+    
+    res.status(200).json({
+      success: true,
+      message: 'Campus updated successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error updating campus:', error);
+    res.status(500).json({
+      success: false,
+      message: error instanceof Error ? error.message : 'Internal server error'
+    });
+  }
+}
+
+export async function updateReappearMarks(req: Request, res: Response) {
+  try {
+    const { rollNumber, subjects, examMonth, examYear } = req.body;
+    
+    if (!rollNumber || !subjects || !examMonth || !examYear) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields'
+      });
+    }
+    
+    const result = await updateMarks(
+      rollNumber, subjects, examMonth, examYear, 'Reappear'
+    );
+    
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: result.message
+      });
+    }
+    
+    res.status(200).json({
+      success: true,
+      message: 'Reappear marks updated successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error updating reappear marks:', error);
+    res.status(500).json({
+      success: false,
+      message: error instanceof Error ? error.message : 'Internal server error'
+    });
+  }
+}
+
+export async function updateRegularMarks(req: Request, res: Response) {
+  try {
+    const { rollNumber, subjects, examMonth, examYear } = req.body;
+    
+    if (!rollNumber || !subjects || !examMonth || !examYear) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields'
+      });
+    }
+    
+    const result = await updateMarks(
+      rollNumber, subjects, examMonth, examYear, 'Regular'
+    );
+    
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: result.message
+      });
+    }
+    
+    res.status(200).json({
+      success: true,
+      message: 'Regular marks updated successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error updating regular marks:', error);
+    res.status(500).json({
+      success: false,
+      message: error instanceof Error ? error.message : 'Internal server error'
     });
   }
 }
