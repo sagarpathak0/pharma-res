@@ -19,3 +19,9 @@ export interface Student {
   admission_year: string;
   result: Result[];
 }
+
+export interface SearchResult {
+  isLoading: boolean;
+  error: string | null;
+  data: Student | null;
+}
