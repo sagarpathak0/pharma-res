@@ -50,6 +50,40 @@ export const insertMarksQuery = `
     subject_year = EXCLUDED.subject_year;
 `;
 
+// Update campus information
+export const updateCampusQuery = `
+  UPDATE "Student"
+  SET campus = $2
+  WHERE roll_number = $1
+  RETURNING *;
+`;
+
+// Update marks (for both regular and reappear)
+export const updateMarksQuery = `
+  UPDATE "Marks"
+  SET marks_obtained = $4,
+      grade = $5,
+      pass_fail = $6
+  WHERE roll_number = $1
+    AND subject_code = $2
+    AND exam_id = $3
+  RETURNING *;
+`;
+
+// Check if mark entry exists
+export const checkMarkExistsQuery = `
+  SELECT * FROM "Marks"
+  WHERE roll_number = $1
+    AND subject_code = $2
+    AND exam_id = $3;
+`;
+
+// Get subject information
+export const getSubjectQuery = `
+  SELECT * FROM "Subject"
+  WHERE subject_code = $1;
+`;
+
 export const searchResultsQuery = `
   WITH academic_year_calc AS (
     SELECT m.*, s.name, s.program, s.campus, s.admission_year,
