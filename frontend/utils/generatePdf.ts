@@ -34,7 +34,7 @@ export const generatePDF = async (contentRef: React.RefObject<HTMLElement>): Pro
         },
         jsPDF: { 
           unit: "in",
-        //   format: 'a4',
+          format: 'a4',
           orientation: "portrait",
         //   compress: true,
         //   precision: 16

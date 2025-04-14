@@ -20,7 +20,7 @@ router.post('/results/search', searchResults);
 router.get('/academic-years/:rollNo', getAcademicYears);
 
 // New update routes
-router.put('/students/:rollNo/campus', updateStudentCampus);
+router.put('/students/:rollNo/:campus', updateStudentCampus);
 router.put('/results/reappear', updateReappearMarks);
 router.put('/results/regular', updateRegularMarks);
 
