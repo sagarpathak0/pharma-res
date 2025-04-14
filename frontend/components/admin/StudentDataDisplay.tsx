@@ -14,32 +14,29 @@ const StudentDataDisplay: React.FC<StudentDataDisplayProps> = ({
     onSave,
     isSaving
 }) => {
+    // Store original data for reverting on invalid input
+    const [originalData] = useState<Student>(JSON.parse(JSON.stringify(studentData)));
+    // Current edited data
     const [editedData, setEditedData] = useState<Student>({...studentData});
+    // Track changed campus
     const [isCampusChanged, setIsCampusChanged] = useState(false);
+    // Track changed marks
     const [changedMarks, setChangedMarks] = useState<Subject[]>([]);
     
     // Handle campus update
     const handleCampusChange = (newCampus: string) => {
-        if (newCampus !== studentData.campus) {
-            setEditedData(prev => ({
-                ...prev,
-                campus: newCampus
-            }));
-            setIsCampusChanged(true);
-        } else {
-            setIsCampusChanged(false);
-        }
+        setEditedData(prev => ({
+            ...prev,
+            campus: newCampus
+        }));
+        setIsCampusChanged(newCampus !== studentData.campus);
     };
     
     // Handle marks update
     const handleMarksChange = (yearIndex: number, subjectIndex: number, newMarks: string) => {
         const updatedResult = [...editedData.result];
         const subject = updatedResult[yearIndex].marks[subjectIndex];
-        
-        // Skip update if the value hasn't changed
-        if (subject.marks_obtained === newMarks) {
-            return;
-        }
+        const originalValue = originalData.result[yearIndex].marks[subjectIndex].marks_obtained;
         
         // Create a copy of the subject with the updated mark
         const updatedSubject = {
@@ -59,6 +56,14 @@ const StudentDataDisplay: React.FC<StudentDataDisplayProps> = ({
             ...prev,
             result: updatedResult
         }));
+        
+        // If value equals original, remove from changedMarks
+        if (newMarks === originalValue) {
+            setChangedMarks(prev => 
+                prev.filter(s => s.course_code !== subject.course_code)
+            );
+            return;
+        }
         
         // Track this subject in changedMarks
         const existingIndex = changedMarks.findIndex(
@@ -85,7 +90,6 @@ const StudentDataDisplay: React.FC<StudentDataDisplayProps> = ({
     // Handle marks save button click
     const handleMarksSave = () => {
         onSave(editedData, 'marks', changedMarks);
-        setChangedMarks([]);
     };
     
     return (
@@ -146,6 +150,7 @@ const StudentDataDisplay: React.FC<StudentDataDisplayProps> = ({
                             yearIndex={yearIndex}
                             onMarksChange={handleMarksChange}
                             changedSubjectCodes={changedMarks.map(s => s.course_code)}
+                            originalData={originalData.result[yearIndex]}
                         />
                     ))}
                 </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Result } from '@/types/student';
 
 interface StudentMarksTableProps {
@@ -6,16 +6,87 @@ interface StudentMarksTableProps {
     yearIndex: number;
     onMarksChange: (yearIndex: number, subjectIndex: number, newMarks: string) => void;
     changedSubjectCodes?: string[];
+    originalData?: Result; // Add original data for reverting
 }
+
+// Validate marks - must be number between 0-100 or "A" or "UFM"
+const validateMarks = (marks: string): { isValid: boolean; message?: string } => {
+    // If marks is "A" or "UFM", it's valid
+    if (marks === "A" || marks === "UFM") {
+        return { isValid: true };
+    }
+    
+    // Try to parse as number
+    const numericMarks = parseFloat(marks);
+    if (isNaN(numericMarks)) {
+        return { 
+            isValid: false, 
+            message: "Marks must be a number between 0-100, or 'A', or 'UFM'" 
+        };
+    }
+    
+    // Check if in range 0-100
+    if (numericMarks < 0 || numericMarks > 100) {
+        return { 
+            isValid: false, 
+            message: "Marks must be between 0 and 100" 
+        };
+    }
+    
+    return { isValid: true };
+};
 
 const StudentMarksTable: React.FC<StudentMarksTableProps> = ({ 
     yearData, 
     yearIndex, 
     onMarksChange,
-    changedSubjectCodes = []
+    changedSubjectCodes = [],
+    originalData
 }) => {
+    // Store local invalid state
+    const [invalidFields, setInvalidFields] = useState<Record<string, boolean>>({});
+    
     // Get the examination date from the first subject
     const examinationDate = yearData.marks.length > 0 ? yearData.marks[0].month_year : '';
+    
+    // Function to handle input change with validation
+    const handleInputChange = (subjectIndex: number, newValue: string, courseCode: string) => {
+        // First remove any invalid state if it exists
+        if (invalidFields[courseCode]) {
+            setInvalidFields(prev => {
+                const updated = {...prev};
+                delete updated[courseCode];
+                return updated;
+            });
+        }
+        
+        // Update the parent component with the new value
+        onMarksChange(yearIndex, subjectIndex, newValue);
+    };
+    
+    // Function to validate on blur
+    const handleBlur = (subjectIndex: number, value: string, courseCode: string) => {
+        const validation = validateMarks(value);
+        
+        if (!validation.isValid) {
+            // Mark as invalid
+            setInvalidFields(prev => ({
+                ...prev,
+                [courseCode]: true
+            }));
+            
+            // Show error message
+            alert(`Invalid markss: ${validation.message}`);
+            
+            // Revert to original value if available
+            if (originalData) {
+                const originalValue = originalData.marks.find(m => m.course_code === courseCode)?.marks_obtained;
+                if (originalValue) {
+                    onMarksChange(yearIndex, subjectIndex, originalValue);
+                }
+            }
+        }
+    };
     
     return (
         <div className="mb-6 last:mb-0">
@@ -46,9 +117,10 @@ const StudentMarksTable: React.FC<StudentMarksTableProps> = ({
                     <tbody className="bg-white divide-y divide-gray-200">
                         {yearData.marks.map((subject, subjectIndex) => {
                             const isChanged = changedSubjectCodes.includes(subject.course_code);
+                            const isInvalid = invalidFields[subject.course_code];
                             
                             return (
-                                <tr key={subject.course_code} className={`hover:bg-gray-50 ${isChanged ? 'bg-blue-50' : ''}`}>
+                                <tr key={subject.course_code} className={`hover:bg-gray-50 ${isChanged ? 'bg-blue-50' : ''} ${isInvalid ? 'bg-red-50' : ''}`}>
                                     <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
                                         {subject.course_code}
                                     </td>
@@ -59,14 +131,21 @@ const StudentMarksTable: React.FC<StudentMarksTableProps> = ({
                                         <input
                                             type="text"
                                             value={subject.marks_obtained}
-                                            onChange={(e) => onMarksChange(yearIndex, subjectIndex, e.target.value)}
+                                            onChange={(e) => handleInputChange(subjectIndex, e.target.value, subject.course_code)}
+                                            onBlur={(e) => handleBlur(subjectIndex, e.target.value, subject.course_code)}
                                             className={`w-16 px-2 py-1 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
-                                                isChanged 
-                                                    ? 'border-blue-500 bg-blue-50' 
-                                                    : 'border-gray-300'
+                                                isInvalid 
+                                                    ? 'border-red-500 bg-red-50' 
+                                                    : isChanged 
+                                                        ? 'border-blue-500 bg-blue-50' 
+                                                        : 'border-gray-300'
                                             }`}
+                                            title="Enter marks (0-100, A, or UFM)"
                                         />
-                                        {isChanged && (
+                                        {isInvalid && (
+                                            <span className="ml-2 text-xs text-red-600">Invalid</span>
+                                        )}
+                                        {isChanged && !isInvalid && (
                                             <span className="ml-2 text-xs text-blue-600">Changed</span>
                                         )}
                                     </td>
