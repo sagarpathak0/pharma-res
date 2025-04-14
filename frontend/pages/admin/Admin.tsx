@@ -196,7 +196,10 @@ function App() {
                 ) : searchResult.data ? (
                     <StudentController 
                         studentData={searchResult.data} 
-                        onRefresh={handleSearch}
+                        onRefresh={async () => {
+                            const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+                            await handleSearch(fakeEvent);
+                        }}
                     />
                 ) : showResult ? (
                     <NotFoundState 
