@@ -9,23 +9,33 @@ interface SearchParams {
 
 // Function to search for student results
 export const searchStudentResults = async (params: SearchParams) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/results/search`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(params),
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/results/search`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to fetch results');
     }
-  );
 
-  const result = await response.json();
-  if (!response.ok) {
-    throw new Error(result.message || "Failed to fetch results");
+    if (!result.data) {
+      throw new Error('No results found for the given criteria');
+    }
+
+    return result;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
   }
-
-  return result;
 };
 
 // Function to update student campus

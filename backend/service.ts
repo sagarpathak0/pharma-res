@@ -107,7 +107,7 @@ export async function updateCampus(rollNo: string, campus: string): Promise<bool
   
   try {
     const result = await client.query(updateCampusQuery, [rollNo, campus]);
-    return result.rowCount > 0;
+    return result.rowCount !== null && result.rowCount > 0;
   } catch (error) {
     console.error('Error updating campus:', error);
     throw error;

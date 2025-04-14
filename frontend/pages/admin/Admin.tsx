@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SearchResult } from "@/types/student";
 import { searchStudentResults } from "@/utils/api";
 
@@ -22,82 +22,162 @@ function App() {
         data: null
     });
 
-    // Function to handle the API call
-    const fetchStudentData = async () => {
-        console.log("Fetching data with params:", {
-            rollNumber,
-            academicYear,
-            examType
-        });
+    const [academicYears, setAcademicYears] = useState<{
+        isLoading: boolean;
+        years: string[];
+        error: string | null;
+    }>({
+        isLoading: false,
+        years: [],
+        error: null
+    });
+
+    const [searchState, setSearchState] = useState({
+        isLoading: false,
+        error: null as string | null,
+        noResults: false
+    });
+
+    useEffect(() => {
+        const fetchAcademicYears = async () => {
+            if (rollNumber.length >= 8) {
+                setAcademicYears(prev => ({ ...prev, isLoading: true, error: null }));
+                try {
+                    const response = await fetch(
+                        `${process.env.NEXT_PUBLIC_API_URL}/api/academic-years/${rollNumber}`
+                    );
+                    const data = await response.json();
+
+                    if (!response.ok) throw new Error(data.message);
+
+                    setAcademicYears({
+                        isLoading: false,
+                        years: data.years,
+                        error: null
+                    });
+
+                    // Set first year as default if available
+                    if (data.years.length > 0) {
+                        setAcademicYear(data.years[0]);
+                    }
+                } catch (error) {
+                    setAcademicYears({
+                        isLoading: false,
+                        years: [],
+                        error: error instanceof Error ? error.message : "Failed to fetch academic years"
+                    });
+                }
+            } else {
+                setAcademicYears({
+                    isLoading: false,
+                    years: [],
+                    error: null
+                });
+            }
+        };
+
+        fetchAcademicYears();
+    }, [rollNumber]);
+
+    const handleSearch = async (e: React.FormEvent) => {
+        e.preventDefault();
         
-        setSearchResult({
-            isLoading: true,
-            error: null,
-            data: null
-        });
+        // Add validation
+        if (!rollNumber || !academicYear || !examType) {
+            setSearchResult({
+                isLoading: false,
+                error: "Please fill in all required fields",
+                data: null
+            });
+            setShowResult(true);
+            return;
+        }
+
+        if (rollNumber.length < 8) {
+            setSearchResult({
+                isLoading: false,
+                error: "Please enter a valid roll number",
+                data: null
+            });
+            setShowResult(true);
+            return;
+        }
+
+        setSearchState({ isLoading: true, error: null, noResults: false });
+        setSearchResult({ isLoading: true, error: null, data: null });
         
         try {
-            // Format the examType to match API expectations (capitalize first letter)
-            const formattedExamType = examType.charAt(0).toUpperCase() + examType.slice(1);
-            
-            // Create the request body
             const params = {
                 rollNumber,
                 academicYear,
-                examType: formattedExamType
+                examType: examType.charAt(0).toUpperCase() + examType.slice(1)
             };
-            
-            // Make the API call
-            const result = await searchStudentResults(params);
-            
-            if (!result.data) {
-                // Handle case where API returns success but no data
-                setSearchResult({
-                    isLoading: false,
-                    error: "No student data found with the provided details",
-                    data: null
-                });
-            } else {
-                // Set the result data
-                setSearchResult({
+
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/results/search`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(params),
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.data) {
+                setSearchState({
                     isLoading: false,
                     error: null,
-                    data: result.data
+                    noResults: true
                 });
-                
-                // Log the data to console
-                console.log("Student data retrieved:", result.data);
+                setSearchResult({
+                    isLoading: false,
+                    error: "No results found for the given criteria",
+                    data: null
+                });
+                setShowResult(true);
+                return;
             }
-            
-            // Show the result UI
-            setShowResult(true);
-            
-        } catch (error) {
-            console.error("Error fetching student data:", error);
+
+            setSearchState({
+                isLoading: false,
+                error: null,
+                noResults: false
+            });
             
             setSearchResult({
                 isLoading: false,
-                error: error instanceof Error ? error.message : "An unknown error occurred",
-                data: null
+                error: null,
+                data: result.data
+            });
+            setShowResult(true);
+        
+        } catch (error) {
+            const errorMessage = error instanceof Error 
+                ? error.message 
+                : "An unexpected error occurred";
+            
+            setSearchState({
+                isLoading: false,
+                error: errorMessage,
+                noResults: false
             });
             
-            // Show the "no result" UI
+            setSearchResult({
+                isLoading: false,
+                error: errorMessage,
+                data: null
+            });
             setShowResult(true);
         }
     };
 
-    // Modify the submit handler to call the fetch function
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        fetchStudentData();
-    };
-
     return (
         <div className="min-h-screen w-full flex flex-col bg-gray-100 text-black">
-            {/* Header Component */}
             <AdminHeader />
 
-            {/* Search Form Component */}
             <SearchForm
                 rollNumber={rollNumber}
                 setRollNumber={setRollNumber}
@@ -105,18 +185,18 @@ function App() {
                 setAcademicYear={setAcademicYear}
                 examType={examType}
                 setExamType={setExamType}
-                isLoading={searchResult.isLoading}
-                onSubmit={handleSubmit}
+                isLoading={searchState.isLoading}
+                onSubmit={handleSearch}
+                academicYears={academicYears}
             />
 
-            {/* Main Content Area */}
             <div className="flex-1 p-4 sm:p-6 bg-gray-50 overflow-auto">
                 {searchResult.isLoading ? (
                     <LoadingState />
                 ) : searchResult.data ? (
                     <StudentController 
                         studentData={searchResult.data} 
-                        onRefresh={fetchStudentData}
+                        onRefresh={handleSearch}
                     />
                 ) : showResult ? (
                     <NotFoundState 

@@ -9,6 +9,11 @@ interface SearchFormProps {
   setExamType: (value: string) => void;
   isLoading: boolean;
   onSubmit: (e: React.FormEvent) => void;
+  academicYears: {
+    isLoading: boolean;
+    years: string[];
+    error: string | null;
+  };
 }
 
 const SearchForm: React.FC<SearchFormProps> = ({
@@ -19,14 +24,13 @@ const SearchForm: React.FC<SearchFormProps> = ({
   examType,
   setExamType,
   isLoading,
-  onSubmit
+  onSubmit,
+  academicYears,
 }) => {
   return (
     <div className="w-full bg-white shadow-md border-b">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
-        <form
-          onSubmit={onSubmit}
-          className="grid gap-3 sm:gap-4">
+        <form onSubmit={onSubmit} className="grid gap-3 sm:gap-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {/* Roll Number Input */}
             <div className="space-y-1">
@@ -91,14 +95,35 @@ const SearchForm: React.FC<SearchFormProps> = ({
                   id="academicYear"
                   value={academicYear}
                   onChange={(e) => setAcademicYear(e.target.value)}
-                  className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 border border-gray-300 rounded-md text-xs sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                  className={`w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 border border-gray-300 rounded-md text-xs sm:text-sm 
+                    focus:ring-blue-500 focus:border-blue-500
+                    ${(isLoading || academicYears.isLoading || academicYears.years.length === 0) 
+                      ? 'bg-gray-50 cursor-not-allowed' 
+                      : ''}`
+                  }
                   required
-                  disabled={isLoading}
+                  disabled={isLoading || academicYears.isLoading || academicYears.years.length === 0}
                 >
-                  <option value="2023-2024">2023-24</option>
-                  <option value="2022-2023">2022-23</option>
-                  <option value="2021-2022">2021-22</option>
+                  <option value="">
+                    {academicYears.isLoading 
+                      ? 'Loading...' 
+                      : academicYears.years.length === 0 
+                        ? 'Enter roll number first' 
+                        : 'Select Academic Year'
+                    }
+                  </option>
+                  {academicYears.years.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
                 </select>
+                {academicYears.isLoading && (
+                  <p className="mt-1 text-xs text-gray-500">Loading academic years...</p>
+                )}
+                {academicYears.error && (
+                  <p className="mt-1 text-xs text-red-500">{academicYears.error}</p>
+                )}
               </div>
             </div>
 
@@ -139,7 +164,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
               </div>
             </div>
           </div>
-          
+
           {/* Search Button */}
           <div className="flex justify-center mt-1 sm:mt-2">
             <button
