@@ -182,7 +182,7 @@ function App() {
         
         try {
             // Make API call to update campus
-            const response = await axios.post(
+            const response = await axios.put(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/students/${student.roll}/${encodeURIComponent(newCampus)}`,
                 {},
                 {
@@ -275,7 +275,7 @@ function App() {
             console.log("Sending regular marks payload (only changed marks):", payload);
             
             // Make API call to update regular marks
-            const response = await axios.post(
+            const response = await axios.put(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/results/regular`,
                 payload,
                 {
@@ -362,7 +362,7 @@ function App() {
             console.log("Sending reappear marks payload (only changed marks):", payload);
             
             // Make API call to update reappear marks
-            const response = await axios.post(
+            const response = await axios.put(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/results/reappear`,
                 payload,
                 {

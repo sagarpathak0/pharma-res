@@ -116,7 +116,7 @@ export async function getAcademicYears(req: Request, res: Response) {
 export async function updateStudentCampus(req: Request, res: Response) {
   try {
     const { rollNo } = req.params;
-    const { campus } = req.body;
+    const { campus } = req.params;
     
     if (!rollNo || !campus) {
       return res.status(400).json({
