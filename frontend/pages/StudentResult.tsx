@@ -1,8 +1,9 @@
 'use client';
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+import dseu from "@/public/dseulogo.png";
 import First from "../components/first";
 import Second from "../components/second";
-// import { useReactToPrint } from 'react-to-print';
 import { generatePDF } from "@/utils/generatePdf";
 
 export interface Subject {
@@ -66,32 +67,6 @@ export default function StudentResult() {
 
   // Create ref to capture the result section
   const resultRef = useRef<HTMLDivElement>(null);
-
-  // Fix how useReactToPrint is configured
-  // const handlePrint = useReactToPrint({
-  //   contentRef: resultRef,
-  //   documentTitle: 'Student Result',
-  //   onBeforePrint: () => {
-  //     console.log("Ref exists before print:", !!resultRef.current);
-  //     return Promise.resolve();
-  //   },
-  //   onAfterPrint: () => console.log('Printed successfully'),
-  //   pageStyle: `
-  //     @page {
-  //       margin: 10mm;
-  //     }
-  //     @media print {
-  //       body {
-  //         -webkit-print-color-adjust: exact;
-  //         print-color-adjust: exact;
-  //         background-color: #ffffff !important;
-  //       }
-  //       * {
-  //         background-color: white !important;
-  //       }
-  //     }
-  //   `,
-  // });
 
   // Fetch available academic years when roll number changes
   useEffect(() => {
@@ -169,122 +144,245 @@ export default function StudentResult() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Student Result Portal
-          </h1>
-          <p className="mt-2 text-gray-600">
-            Enter your details to view your results
-          </p>
-        </div>
-
-        <div className="bg-white shadow-sm rounded-lg p-6 border border-gray-200">
-          <form onSubmit={handleSearch} className="space-y-6">
-            {/* Roll Number Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Roll Number
-              </label>
-              <input
-                type="text"
-                required
-                value={searchParams.rollNumber}
-                onChange={(e) =>
-                  setSearchParams((prev) => ({
-                    ...prev,
-                    rollNumber: e.target.value,
-                    academicYear: "", // Reset academic year when roll number changes
-                  }))
-                }
-                className="w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md shadow-sm 
-                          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your roll number"
-              />
+    <div className="min-h-screen w-full flex flex-col bg-gray-100 text-black">
+      {/* Header with Brand Colors */}
+      <div className="w-full bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="bg-white p-1.5 sm:p-3 rounded-full">
+                <Image
+                  src={dseu}
+                  alt="DSEU Logo"
+                  width={40}
+                  height={40}
+                  className="h-8 w-8 sm:h-10 sm:w-10"
+                />
+              </div>
+              <h1 className="text-base sm:text-xl font-bold truncate">
+                Student Result Portal
+              </h1>
             </div>
 
-            {/* Academic Year Dropdown */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Academic Year
-              </label>
-              <select
-                required
-                value={searchParams.academicYear}
-                onChange={(e) =>
-                  setSearchParams((prev) => ({
-                    ...prev,
-                    academicYear: e.target.value,
-                  }))
-                }
-                disabled={
-                  academicYears.isLoading || academicYears.years.length === 0
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900
-                          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                          disabled:bg-gray-50 disabled:text-gray-500"
-              >
-                <option value="">Select Academic Year</option>
-                {academicYears.years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-              {academicYears.isLoading && (
-                <p className="mt-1 text-sm text-gray-500">
-                  Loading academic years...
-                </p>
-              )}
-            </div>
-
-            {/* Exam Type Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Exam Type
-              </label>
-              <select
-                required
-                value={searchParams.examType}
-                onChange={(e) =>
-                  setSearchParams((prev) => ({
-                    ...prev,
-                    examType: e.target.value as "Regular" | "Reappear",
-                  }))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900
-                          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="Regular">Regular</option>
-                <option value="Reappear">Reappear</option>
-              </select>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={searchResult.isLoading || !searchParams.academicYear}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md 
-                        shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 
-                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-                        disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {searchResult.isLoading ? "Searching..." : "View Result"}
+            <button className="text-xs sm:text-sm bg-white/10 hover:bg-white/20 px-2 sm:px-3 py-1 sm:py-1.5 rounded-md transition-colors">
+              Student Portal
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Search Form Panel */}
+      <div className="w-full bg-white shadow-md border-b">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
+          <form onSubmit={handleSearch} className="grid gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+              {/* Roll Number Input */}
+              <div className="space-y-1">
+                <label
+                  htmlFor="rollNumber"
+                  className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Roll Number
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    id="rollNumber"
+                    value={searchParams.rollNumber}
+                    onChange={(e) =>
+                      setSearchParams((prev) => ({
+                        ...prev,
+                        rollNumber: e.target.value,
+                        academicYear: "", // Reset academic year when roll number changes
+                      }))
+                    }
+                    className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 border border-gray-300 rounded-md text-xs sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter roll number"
+                    required
+                    disabled={searchResult.isLoading}
+                  />
+                </div>
+              </div>
+
+              {/* Academic Year Dropdown */}
+              <div className="space-y-1">
+                <label
+                  htmlFor="academicYear"
+                  className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Academic Year
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <select
+                    id="academicYear"
+                    value={searchParams.academicYear}
+                    onChange={(e) =>
+                      setSearchParams((prev) => ({
+                        ...prev,
+                        academicYear: e.target.value,
+                      }))
+                    }
+                    className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 border border-gray-300 rounded-md text-xs sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                    required
+                    disabled={academicYears.isLoading || academicYears.years.length === 0 || searchResult.isLoading}
+                  >
+                    <option value="">Select Academic Year</option>
+                    {academicYears.years.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                  {academicYears.isLoading && (
+                    <div className="mt-1 text-xs text-gray-500 flex items-center">
+                      <svg className="animate-spin h-3 w-3 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Loading years...
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Exam Type Selection */}
+              <div className="space-y-1 flex flex-col">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Examination Type
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
+                      />
+                    </svg>
+                  </div>
+                  <select
+                    id="examType"
+                    value={searchParams.examType}
+                    onChange={(e) =>
+                      setSearchParams((prev) => ({
+                        ...prev,
+                        examType: e.target.value as "Regular" | "Reappear",
+                      }))
+                    }
+                    className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 border border-gray-300 rounded-md text-xs sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                    required
+                    disabled={searchResult.isLoading}
+                  >
+                    <option value="Regular">Regular</option>
+                    <option value="Reappear">Reappear</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            {/* Search Button */}
+            <div className="flex justify-center mt-1 sm:mt-2">
+              <button
+                type="submit"
+                disabled={searchResult.isLoading || !searchParams.academicYear}
+                className="w-fit h-fit px-4 sm:px-6 py-2 sm:py-2.5 bg-blue-600 text-white rounded-md text-xs sm:text-sm font-medium hover:bg-blue-700 shadow-sm transition-colors flex items-center gap-1.5 sm:gap-2 disabled:bg-blue-400 disabled:cursor-not-allowed"
+              >
+                {searchResult.isLoading ? (
+                  <>
+                    <svg className="animate-spin h-3 w-3 sm:h-4 sm:w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Searching...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3 sm:h-4 sm:w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                    <span>View Result</span>
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         </div>
+      </div>
 
+      {/* Main Content Area - Results Display */}
+      <div className="flex-1 p-4 sm:p-6 bg-gray-50 overflow-auto">
         {/* Error Display */}
         {searchResult.error && (
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-600">{searchResult.error}</p>
+          <div className="text-center bg-white rounded-lg shadow-sm p-5 sm:p-8 max-w-3xl mx-auto border border-gray-200">
+            <div className="bg-red-50 rounded-full mx-auto h-20 sm:h-24 w-20 sm:w-24 flex items-center justify-center">
+              <svg
+                className="h-12 sm:h-16 w-12 sm:w-16 text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <p className="mt-2 sm:mt-3 text-sm sm:text-2xl text-gray-500">
+              {searchResult.error}
+            </p>
           </div>
         )}
 
         {/* Result Display */}
         {searchResult.data && (
-          <div className="mt-6">
+          <div className="max-w-4xl mx-auto">
             <div
               ref={resultRef}
               id="result-container"
@@ -298,15 +396,54 @@ export default function StudentResult() {
                 <Second student={searchResult.data} />
               )}
             </div>
-            {/* Print Button */}
-            <button
-              type="button"
-              onClick={() => generatePDF(resultRef as React.RefObject<HTMLElement>)}
-              className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white 
-                         rounded-md hover:bg-blue-700 focus:outline-none"
-            >
-              Download PDF
-            </button>
+            
+            {/* Download Button */}
+            <div className="flex justify-center mt-4">
+              <button
+                type="button"
+                onClick={() => generatePDF(resultRef as React.RefObject<HTMLElement>)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 shadow-sm transition-colors flex items-center gap-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download PDF
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {/* Empty State - No Search Yet */}
+        {!searchResult.data && !searchResult.error && !searchResult.isLoading && (
+          <div className="text-center max-w-md mx-auto bg-white p-5 sm:p-8 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-blue-50 rounded-full mx-auto h-20 sm:h-24 w-20 sm:w-24 flex items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-10 sm:h-12 w-10 sm:w-12 text-blue-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+              </svg>
+            </div>
+            <h2 className="mt-4 sm:mt-5 text-lg sm:text-xl font-medium text-gray-900">
+              Ready to View Results
+            </h2>
+            <p className="mt-1.5 sm:mt-2 text-sm sm:text-base text-gray-500">
+              Enter your roll number, select the academic year, and exam type to view your results.
+            </p>
+          </div>
+        )}
+        
+        {/* Loading State */}
+        {searchResult.isLoading && (
+          <div className="flex justify-center items-center h-48">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
           </div>
         )}
       </div>
