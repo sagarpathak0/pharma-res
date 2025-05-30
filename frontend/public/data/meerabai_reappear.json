@@ -1,0 +1,349 @@
+[
+  {
+    "name": "ANKITA YADAV",
+    "roll": 11322068,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-11T",
+            "course_name": "Pharmaceutics - Theory",
+            "marks_obtained": "40",
+            "month_year": "2023"
+          },
+          {
+            "course_code": "ER20-13T",
+            "course_name": "Pharmacognosy - Theory",
+            "marks_obtained": "24",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "NIKHAT JAHAN",
+    "roll": 11322091,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-12T",
+            "course_name": "Pharmaceutical Chemistry - Theory",
+            "marks_obtained": "45",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "DOLI",
+    "roll": 232011018089,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-12T",
+            "course_name": "Pharmaceutical Chemistry - Theory",
+            "marks_obtained": "45",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ISTUTI KUMARI",
+    "roll": 232011018097,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-12T",
+            "course_name": "Pharmaceutical Chemistry - Theory",
+            "marks_obtained": "47",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "MAMTA JAISWAL",
+    "roll": 232011018107,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-11T",
+            "course_name": "Pharmaceutics - Theory",
+            "marks_obtained": "41",
+            "month_year": "2023"
+          },
+          {
+            "course_code": "ER20-14T",
+            "course_name": "Human Anatomy and Physiology - Theory",
+            "marks_obtained": "40",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "MOHINI",
+    "roll": 232011018110,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-11T",
+            "course_name": "Pharmaceutics - Theory",
+            "marks_obtained": "40",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "NIKKI SHARMA",
+    "roll": 232011018117,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-12T",
+            "course_name": "Pharmaceutical Chemistry - Theory",
+            "marks_obtained": "47",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "NUSRAT PARVEEN",
+    "roll": 232011018120,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-13T",
+            "course_name": "Pharmacognosy - Theory",
+            "marks_obtained": "62",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "POOJA KUMARI",
+    "roll": 232011018122,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-12T",
+            "course_name": "Pharmaceutical Chemistry - Theory",
+            "marks_obtained": "51",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "PRIYANKA",
+    "roll": 232011018127,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-15P",
+            "course_name": "Social Pharmacy - Practical",
+            "marks_obtained": "40",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "SAKSHI",
+    "roll": 232011018132,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "HS-032",
+            "course_name": "English Communication",
+            "marks_obtained": "51",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "SAPNA",
+    "roll": 232011018137,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-15T",
+            "course_name": "Social Pharmacy - Theory",
+            "marks_obtained": "51",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "SHEETAL PRASAD",
+    "roll": 232011018142,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-15T",
+            "course_name": "Social Pharmacy - Theory",
+            "marks_obtained": "50",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "SHIVANI PAL",
+    "roll": 232011018144,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-15T",
+            "course_name": "Social Pharmacy - Theory",
+            "marks_obtained": "45",
+            "month_year": "2023"
+          },
+          {
+            "course_code": "HS-032",
+            "course_name": "English Communication",
+            "marks_obtained": "42",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "SHRISTI KUMARI",
+    "roll": 232011018148,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-11T",
+            "course_name": "Pharmaceutics - Theory",
+            "marks_obtained": "42",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "SONI",
+    "roll": 232011018151,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-15T",
+            "course_name": "Social Pharmacy - Theory",
+            "marks_obtained": "79",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "VANI",
+    "roll": 232011018160,
+    "campus": "Meerabai DSEU Maharani Bagh Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-11T",
+            "course_name": "Pharmaceutics - Theory",
+            "marks_obtained": "41",
+            "month_year": "2023"
+          },
+          {
+            "course_code": "ER20-13T",
+            "course_name": "Pharmacognosy - Theory",
+            "marks_obtained": "40",
+            "month_year": "2023"
+          }
+        ]
+      }
+    ]
+  }
+]

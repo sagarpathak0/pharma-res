@@ -1,0 +1,59 @@
+[
+  {
+    "name": "ANIKET KUMAR",
+    "roll": 230611018009,
+    "campus": "DSEU Dwarka Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-15T",
+            "course_name": "Social Pharmacy (Theory)",
+            "marks_obtained": "50",
+            "month_year": "June, 2024"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "DAKSH",
+    "roll": 230611018014,
+    "campus": "DSEU Dwarka Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-12T",
+            "course_name": "Pharmaceutical Chemistry (Theory)",
+            "marks_obtained": "46",
+            "month_year": "June, 2024"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "JATIN YADAV",
+    "roll": 230611018029,
+    "campus": "DSEU Dwarka Campus",
+    "program": "Diploma in Pharmacy",
+    "result": [
+      {
+        "year": 1,
+        "marks": [
+          {
+            "course_code": "ER20-12T",
+            "course_name": "Pharmaceutical Chemistry (Theory)",
+            "marks_obtained": "43",
+            "month_year": "June, 2024"
+          }
+        ]
+      }
+    ]
+  }
+]
