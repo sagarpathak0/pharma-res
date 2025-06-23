@@ -132,10 +132,12 @@ const StudentResult = ({ student }: { student: Student }) => {
         <div className="space-y-1 text-sm text-gray-600 mb-8">
           <h3 className="font-medium text-gray-700">Instructions:</h3>
           <ol className="list-decimal pl-4">
-          <li>Students having more than two fail in the Paper Result shall not be entitled for the diploma</li>
-            <li>Face The World Skill marks are not included in the calculation of total marks</li>
-            <li>Abbreviation: PD: Pass with Distinction, PFD: Pass with First Division, P: Pass, F: Fail</li>
-            <li>Student passed provisionally has failed in either of face the world skill or English communication - I or both. To recieve diploma, student should pass these two subjects compulsarily</li>
+          <li>Students failed in more than two courses shall not be entitled for the diploma.</li>
+            <li>Face the World Skills marks are not included in the calculation of total marks.</li>
+            <li>
+              Student has failed in either Face the World Skill or Soft Skills Modules or both is passed provisionally.
+              Student should pass these two subjects compulsorily for award of the diploma.
+            </li>
           </ol>
         </div>
 
